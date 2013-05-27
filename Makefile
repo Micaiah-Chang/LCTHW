@@ -3,6 +3,9 @@ CFLAGS=-Wall -g
 clean:
 	rm -f ./bin/*
 
+ex8:
+	cc ex8.c -o ./bin/ex8
+
 ex7:
 	cc ex7.c -o ./bin/ex7
 
