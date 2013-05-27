@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
   printf("You have %d bugs at the imaginary rate of %f.\n",
 		 bugs, bug_rate);
 
-  long universe_of_defects = 100000000000L;
+  unsigned long universe_of_defects = 1024L * 1024L * 1024L;
   printf("The entire universe has %ld bugs.\n",
 		 universe_of_defects);
 
@@ -25,9 +25,6 @@ int main(int argc, char *argv[])
   printf("Which means you should care %d%%.\n",
 		 care_percentage);
   printf("Nul_byte char: %c\n", nul_byte);
-  printf("Nul_byte string: %s\n", nul_byte);
-
-
   
   return 0;
 }
