@@ -3,6 +3,12 @@ CFLAGS=-Wall -g
 clean:
 	rm -f ./bin/*
 
+ex12:
+	cc ex12.c -o ./bin/ex12
+
+ex11:
+	cc ex11.c -o ./bin/ex11
+
 ex10:
 	cc ex10.c -o ./bin/ex10
 
@@ -39,3 +45,5 @@ all:
 	cc ex8.c -o ./bin/ex8
 	cc ex9.c -o ./bin/ex9
 	cc ex10.c -o ./bin/ex10
+	cc ex11.c -o ./bin/ex11
+	cc ex12.c -o ./bin/ex12
