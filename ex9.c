@@ -39,7 +39,16 @@ int main(int argc, char *argv[])
 	printf("name each: %c %c %c %c\n",
 			name[0], name[1],
 			name[2], name[3]);
-			
+
+	int i = 0;
+	char *all = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	for(i=0; i < 26*2; i++) {
+	  printf("%c: %d ", all[i], all[i]);
+	  if(i % 10 == 0){
+		printf("\n");
+	  }
+	  }
+	
 	// print the name like a string
 	printf("name: %s\n", name);
 	
