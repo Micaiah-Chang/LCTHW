@@ -4,10 +4,11 @@ void index_print(int ages[], char *names[], int count)
 {
 	 // first way of using indexing
 	 int i = 0;
-	 for(i = 0; i < count; i++) {
+	 while(i < count) {
 		  // printf("Count: %d\n", count);
 		  printf("%s has %d years alive.\n",
 				 names[i], ages[i]);
+		  i++;
 	 }	 
 	 printf("---\n");
 }
@@ -16,9 +17,10 @@ void pointer_print(int *cur_age, char **cur_name, int count)
 {
 	 int i = 0;
 	 // second way using pointers
-	 for(i = 0; i < count; i++) {
+	 while(i < count) {
 		  printf("%s is %d years old.\n",
 				 *(cur_name+i),*(cur_age+i));
+		  i++;
 	 }
 
 	 printf("---\n");	 
@@ -28,9 +30,10 @@ void ptr_as_array_print(int *cur_age, char **cur_name, int count)
 {
 	 int i = 0;
 	 	 // third way, pointers are just arrays
-	 for(i = 0; i < count; i++) {
+	 while(i < count) {
 		  printf("%s is %d years old again.\n",
 				 cur_name[i], cur_age[i]);
+		  i++;
 	 }
 
 	 printf("---\n");
@@ -41,12 +44,14 @@ void ptr_arith_print(int ages[], char *names[],
 					 int count)
 {
 	 	 // fourth way with pointers in a stupid complex way
-	 for(cur_name = (names + count - 1), cur_age = (ages + count - 1);
-		 (cur_age - ages) >= 0;
-		 cur_name--, cur_age--)
+	 cur_name = names;
+	 cur_age = ages;
+	 while((cur_age - ages) < count)
 	 {
 		  printf("%s lived %d years so far.\n",
 				 *cur_name, *cur_age);
+		  cur_name++;
+		  cur_age++;
 	 }
 }
 
