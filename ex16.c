@@ -92,8 +92,11 @@ int main(int argc, char *argv[])
 	 Person_print(frank);
 
 	 // destroy them both so we clean up
-	 Person_destroy(joe);
-	 Person_destroy(frank);
+	 /* Person_destroy(joe); */
+	 /* Person_destroy(frank); */
 
+	 /* // Gonna break things */
+	 /* Person_destroy(NULL); */
+	 
 	 return 0;
 }
