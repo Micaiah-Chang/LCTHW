@@ -21,21 +21,19 @@ struct Person {
 };
 
 // Create a function which returns Person that accepts the listed arguments
-struct Person *Person_create(char *name, int age, int height, int weight)
+struct Person Person_create(char *name, int age, int height, int weight)
 {
 	 // Create a pointer of type Person, with the requisite size
-	 struct Person *who = malloc(sizeof(struct Person));
-	 //Did we get the memory? If not ABORT
-	 assert(who != NULL);
+	 struct Person who;
 
 	 // set the person's name to a pointer to a newly duplicated string
-	 who->name = strdup(name);
+	 who.name = strdup(name);
 	 // set the value of age inside person to the argument age
-	 who->age = age;
+	 who.age = age;
 	 // set the value of height inside person to the argument height
-	 who->height = height;
+	 who.height = height;
 	 // set the value of weight inside person to the argument weight
-	 who->weight = weight;
+	 who.weight = weight;
 
 	 // return the pointer of the person 
 	 return who;
@@ -46,7 +44,7 @@ struct Person *Person_create(char *name, int age, int height, int weight)
 void Person_destroy(struct Person *who)
 {
 	 // Check to see if the pointer is valid.
-	 assert(who != NULL);
+	 // assert(who != NULL);
 	 // Free memory associated with the duplicated string in name
 	 free(who->name);
 	 // Free the rest of the memory
@@ -68,36 +66,36 @@ void Person_print(struct Person *who)
 int main(int argc, char *argv[])
 {
 	 // make two people structures
-	 struct Person *joe = Person_create(
+	 struct Person joe = Person_create(
 		  "Joe Alex", 32, 64, 140);
 
-	 struct Person *frank = Person_create(
+	 struct Person frank = Person_create(
 		  "Frank Blank", 20, 72, 180);
 
 	 // print them out where they are in memory
-	 printf("Joe is at memory location %p:\n", joe);
-	 Person_print(joe);
+	 // printf("Joe is at memory location %p:\n", joe);
+	 Person_print(&joe);
 
-	 printf("Frank is at memory location %p:\n", frank);
-	 Person_print(frank);
+	 // printf("Frank is at memory location %p:\n", frank);
+	 Person_print(&frank);
 
 	 // make everyone age 20 years and print them again
-	 joe->age += 20;
-	 joe->height -= 2;
-	 joe->weight += 40;
-	 Person_print(joe);
+	 joe.age += 20;
+	 joe.height -= 2;
+	 joe.weight += 40;
+	 Person_print(&joe);
 
-	 frank->age += 20;
-	 frank->weight += 20;
-	 Person_print(frank);
+	 frank.age += 20;
+	 frank.weight += 20;
+	 Person_print(&frank);
 
 	 // destroy them both so we clean up
-	 Person_destroy(joe);
-	 Person_destroy(frank);
+	 Person_destroy(&joe); 
+	 Person_destroy(&frank);
 
 	 // Gonna break things
 	 /* Person_destroy(NULL); */
 
-	  Person_print(NULL);
+	 // Person_print(NULL);
 	 return 0;
 }
