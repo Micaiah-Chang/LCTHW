@@ -1,12 +1,16 @@
+// Include all the requisite libraries
+
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 
+// Define the two below as constants by the C pre-processor. 
 #define MAX_DATA 512
 #define MAX_ROWS 100
 
+// Declare a structure with the following variables, nothing that the two strings are fixed size and can only have 512 characters in them.
 struct Address {
 	 int id;
 	 int set;
@@ -14,49 +18,86 @@ struct Address {
 	 char email[MAX_DATA];
 };
 
+// Make a new structure composed out of MAX_ROWS number of Address structs
 struct Database {
+	 // Imagine a 100 entry python list that you can only add 4-tuples
+	 // to of the form(int, int, "string", "string")
 	 struct Address rows[MAX_ROWS];
 };
 
+// A structure that's composed of a pointer to a file
+// and the pointer to a database struct.
 struct Connection {
+	 // Note: FILE type only exists in <stdlib.h>
 	 FILE *file;
 	 struct Database *db;
 };
 
+// Die function that recieves a string message and returns nothing
 void die(const char *message)
 {
+	 // If it's a predefined error, that we just saw
+	 // detect it from errno flag...
 	 if(errno) {
+		  // ...and print out the associated error message
+		  // Note that perror then linebreaks and
+		  // prints out a message associated with the errno
+		  // Note: man says that the message should usually be 
+		  // the function the error is coming from
 		  perror(message);
 	 } else {
+		  // Otherwise, just print your own custom error message
 		  printf("ERROR: %s\n", message);
 	 }
 
 	 exit(1);
 }
 
+// Function that recieves a pointer to an address addr and returns nothing
 void Address_print(struct Address *addr)
 {
+	 // prints out a single set of id, name and email
+	 // of the database entry passed here
 	 printf("%d %s %s\n",
 			addr->id, addr->name, addr->email);
 }
 
+// Function that recieves a connection pointer and returns nothing
 void Database_load(struct Connection *conn)
 {
+	 // Try to read data the size of 1 Database structure
+	 // from the file pointer at conn->file
+	 // and send that read information to the same location 
+	 // inside conn->db
 	 int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
+	 // Check to see if it returned 1 piece of data.
+	 // the 1 comes from the THIRD argument in the fread function,
+	 // it is NOT a truth 1. 
 	 if(rc != 1) die("Failed to load database.");
 }
 
+// Function that returns a pointer of type Connection
+// that recieves a pointer to a string and a character
 struct Connection *Database_open(const char *filename, char mode)
 {
+	 // First allocate memory for the connection
 	 struct Connection *conn = malloc(sizeof(struct Connection));
-	 if(!conn) die("Memory error");
+	 // if we fail, cry foul.
+	 if(!conn) die("Memory error"); 
 
+	 // Do the same thing as above for memory.
+	 // Needs to be in this order because the database depends
+	 // on the connection existing and C does not
+	 // automatically allocate dependencies (Important!)
 	 conn->db = malloc(sizeof(struct Database));
 	 if(!conn->db) die("Memory error");
 
+	 // If our mode argument is 'c' for create...
 	 if(mode == 'c') {
+		  // ...create a file of length 0 ready for reading
 		  conn->file = fopen(filename, "w");
 	 } else {
+		  // ... otherwise 
 		  conn->file = fopen(filename, "r+");
 
 		  if(conn->file) {
