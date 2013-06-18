@@ -24,8 +24,8 @@ struct Address {
 struct Database {
 	 // Imagine a 100 entry python list that you can only add 4-tuples
 	 // to of the form(int, int, "string", "string")
-	 const int MAX_DATA;
-	 const int MAX_ROWS;
+	 int MAX_DATA;
+	 int MAX_ROWS;
 	 struct Address *rows;
 };
 
@@ -131,17 +131,33 @@ struct Connection *Database_open(const char *filename, char mode)
 // of pointer containing type Connection
 void Database_close(struct Connection *conn)
 {
+	 int i = 0;
+	 struct Address *cur_row = NULL;
 	 // If the connection pointer isn't null...
 	 if(conn) {
 		  // Then close the file if a file has been opened
 		  if(conn->file) fclose(conn->file);
 		  // and free the memory in use for the database struct
-		  if(conn->db) free(conn->db);
+		  if(conn->db) {
+			   if(conn->db->rows) {
+			   		for(i = 0; i < conn->db->MAX_ROWS; i++) {
+						 cur_row = &conn->db->rows[i];
+						 if(cur_row) {
+			   			 free(cur_row->name);
+			   			 free(cur_row->email);
+						 free(cur_row);
+						 }
+			   		}
+			   }
+			   free(conn->db);
+		  }
 		  // Of course, we shold always free the memory associated with
-		  // the conneciton data structure.
+		  // the connection data structure.
 		  free(conn);
 	 }
+
 }
+
 
 
 // A function which returns nothing and accepts
@@ -173,13 +189,19 @@ void Database_write(struct Connection *conn)
 void Database_create(struct Connection *conn, const int MAX_ROWS, const int MAX_DATA)
 {
 	 int i = 0;
+	 // printf("Boo\n");
 	 // For every possible row...
 	 conn->db->MAX_ROWS = MAX_ROWS;
+	 conn->db->MAX_DATA = MAX_DATA;
+	 conn->db->rows = (struct Address *)malloc(sizeof(struct Address)*MAX_ROWS);
 	 for(i = 0; i < MAX_ROWS; i++) {
 		  // make a prototype to initialize it
-		  struct Address addr = {.id = i, .set = 0};
+		  struct Address addr = {.id = i, .set = 0,
+								 .name = malloc(sizeof(char)*MAX_DATA),
+								 .email = malloc(sizeof(char)*MAX_DATA)};
 		  // then just assign it
 		  conn->db->rows[i] = addr;
+		  printf("%p", &conn->db->rows[i]);
 	 }
 }
 
@@ -196,6 +218,8 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 	 // If the set flag is already 1, then there is already something
 	 // i.e. we cannot overwrite something in the database
 	 // without deleting first. Have to be explicit
+
+	 const int MAX_DATA = conn->db->MAX_DATA;
 	 if(addr->set) die("Already set, delete it first", conn);
 
 	 // Say that it is set. Well of course it is, you just set it
@@ -258,7 +282,7 @@ void Database_list(struct Connection *conn)
 	 int i = 0;
 	 struct Database *db = conn->db;
 
-	 for(i = 0; i < MAX_ROWS; i++) {
+	 for(i = 0; i < db->MAX_ROWS; i++) {
 		  // For the current Address, set it to the address of
 		  // each row
 		  struct Address *cur = &db->rows[i];
@@ -295,10 +319,11 @@ int main(int argc, char *argv[])
 
 	 // If there are more than 3 variables, then convert the 4th arg
 	 // to a row integer with atoi
-	 if(argc > 3) id = atoi(argv[3]);
+	 if(argc > 3 && action != 'c')  id = atoi(argv[3]);
+
 	 // If that number is bigger than the biggest number of rows
 	 // Then cry and fail
-	 if(id >= MAX_ROWS) die("There's not that many records.", conn);
+	 // if(id >= MAX_ROWS) die("There's not that many records.", conn);
 
 	 // Now check the action:
 	 switch(action) {
@@ -306,7 +331,11 @@ int main(int argc, char *argv[])
 		  // and you will create a new database
 		  // and write to a file with a blank
 	 case 'c':
-		  Database_create(conn);
+		  if(argc != 5) die("Need MAX_ROWS and MAX_DATA", conn);
+
+		  //if(!(typeof()))
+		  // Need to detect that the 4th and the 5th elements are integers
+		  Database_create(conn, atoi(argv[3]), atoi(argv[4]));
 		  Database_write(conn);
 		  break;
 
