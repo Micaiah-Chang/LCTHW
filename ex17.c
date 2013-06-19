@@ -86,21 +86,20 @@ void Database_load(struct Connection *conn)
 
 	 const int MAX_ROWS = conn->db->MAX_ROWS;
 	 const int MAX_DATA = conn->db->MAX_DATA;
+	 int i = 0;
 
 //	 struct Address *addr = &conn->db->rows[0];
 	 printf("Max rows: %d\n", MAX_ROWS);
 	 printf("Max Data: %d\n", MAX_DATA);
-			
-	 rc = fread(conn->db->rows, sizeof(struct Address),
-					MAX_ROWS, conn->file);
-	 if(rc != MAX_ROWS) die("Failed to load rows.", conn);
-
-	 int i = 0;
-	 for(i = 0; i < MAX_ROWS; i++){
+	 for(i = 0; i < MAX_ROWS; i++) {
+		  rc = fread(conn->db->rows, sizeof(struct Address),
+					1 , conn->file);
+		  if(rc != 1) die("Failed to load rows.", conn);
 		  rc = fread(&conn->db->rows[i], sizeof(char),
-					MAX_DATA, conn->file);
+					 MAX_DATA, conn->file);
 		  if(rc != MAX_DATA) die("Failed to load rows.", conn);
 	 }
+
 }
 
 // Function that returns a pointer of type Connection
