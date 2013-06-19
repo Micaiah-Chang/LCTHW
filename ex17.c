@@ -83,6 +83,24 @@ void Database_load(struct Connection *conn)
 	 // the 1 comes from the THIRD argument in the fread function,
 	 // it is NOT a truth 1. 
 	 if(rc != 1) die("Failed to load database.", conn);
+
+	 const int MAX_ROWS = conn->db->MAX_ROWS;
+	 const int MAX_DATA = conn->db->MAX_DATA;
+
+//	 struct Address *addr = &conn->db->rows[0];
+	 printf("Max rows: %d\n", MAX_ROWS);
+	 printf("Max Data: %d\n", MAX_DATA);
+			
+	 rc = fread(conn->db->rows, sizeof(struct Address),
+					MAX_ROWS, conn->file);
+	 if(rc != MAX_ROWS) die("Failed to load rows.", conn);
+
+	 int i = 0;
+	 for(i = 0; i < MAX_ROWS; i++){
+		  rc = fread(&conn->db->rows[i], sizeof(char),
+					MAX_DATA, conn->file);
+		  if(rc != MAX_DATA) die("Failed to load rows.", conn);
+	 }
 }
 
 // Function that returns a pointer of type Connection
@@ -143,11 +161,11 @@ void Database_close(struct Connection *conn)
 			   		for(i = 0; i < conn->db->MAX_ROWS; i++) {
 						 cur_row = &conn->db->rows[i];
 						 if(cur_row) {
-			   			 free(cur_row->name);
-			   			 free(cur_row->email);
-						 free(cur_row);
+							  free(cur_row->name);
+							  free(cur_row->email); 
 						 }
 			   		}
+					free(conn->db->rows);
 			   }
 			   free(conn->db);
 		  }
@@ -196,12 +214,14 @@ void Database_create(struct Connection *conn, const int MAX_ROWS, const int MAX_
 	 conn->db->rows = (struct Address *)malloc(sizeof(struct Address)*MAX_ROWS);
 	 for(i = 0; i < MAX_ROWS; i++) {
 		  // make a prototype to initialize it
-		  struct Address addr = {.id = i, .set = 0,
-								 .name = malloc(sizeof(char)*MAX_DATA),
-								 .email = malloc(sizeof(char)*MAX_DATA)};
+		  struct Address addr;
+		  addr.id = i;
+		  addr.set = 0;
+		  addr.name =  malloc(sizeof(char)*MAX_DATA);
+		  addr.email = malloc(sizeof(char)*MAX_DATA);
 		  // then just assign it
 		  conn->db->rows[i] = addr;
-		  printf("%p", &conn->db->rows[i]);
+		  printf("Address: %p\n", &conn->db->rows[i]);
 	 }
 }
 
