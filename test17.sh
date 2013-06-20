@@ -7,7 +7,7 @@ if [ "$valgrind" = "y" ]; then
 prefix="valgrind "
 fi
 echo Creating database...
-$prefix ./bin/ex17 db.bat c 10 25
+$prefix ./bin/ex17 db.bat c 
 
 echo Cleaning up...
 rm db.bat
