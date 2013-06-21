@@ -15,6 +15,7 @@ void die(const char *message)
 	 exit(1);
 }
 
+
 // a typedef creates a fake type, in this
 // case for a function pointer
 typedef int (*compare_cb)(int a, int b);
@@ -83,6 +84,14 @@ void test_sorting(int *numbers, int count, compare_cb cmp)
 	 printf("\n");
 	 
 	 free(sorted);
+
+	 unsigned char *data = (unsigned char *)cmp;
+
+	 for(i = 0; i < 25; i++) {
+		  printf("%02x:", data[i]);
+	 }
+
+	 printf("\n");
 }
 
 
@@ -100,7 +109,6 @@ int main(int argc, char *argv[])
 	 for(i = 0; i < count; i++) {
 		  numbers[i] = atoi(inputs[i]);
 	 }
-
 
 	 test_sorting(numbers, count, sorted_order);
 	 test_sorting(numbers, count, reverse_order);
