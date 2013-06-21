@@ -10,8 +10,6 @@
 /* #define MAX_DATA 512 */
 /* #define MAX_ROWS 100 */
 
-
-// Declare a structure with the following variables, nothing that the two strings are fixed size and can only have 512 characters in them.
 struct Address {
 	 int id;
 	 int set;
@@ -21,75 +19,53 @@ struct Address {
 };
 
 
-// Make a new structure composed out of MAX_ROWS number of Address structs
+
 struct Database {
-	 // Imagine a 100 entry python list that you can only add 4-tuples
-	 // to of the form(int, int, "string", "string")
 	 int MAX_DATA;
 	 int MAX_ROWS;
 	 struct Address *rows;
 };
 
-// A structure that's composed of a pointer to a file
-// and the pointer to a database struct.
 struct Connection {
-	 // Note: FILE type only exists in <stdlib.h>
 	 FILE *file;
 	 struct Database *db;
 };
 
 void Database_close(struct Connection *conn);
 
-// Die function that recieves a string message and returns nothing
 void die(const char *message, struct Connection *conn)
 {
-	 // If it's a predefined error, that we just saw
-	 // detect it from errno flag...
 	 if(errno) {
-		  // ...and print out the associated error message
-		  // Note that perror then linebreaks and
-		  // prints out a message associated with the errno
-		  // Note: man says that the message should usually be 
-		  // the function the error is coming from
 		  perror(message);
 	 } else {
-		  // Otherwise, just print your own custom error message
+
 		  printf("ERROR: %s\n", message);
 	 }
 	 
 	 Database_close(conn); // Free memory
-		  
 
 	 exit(1);
 }
 
-// Function that recieves a pointer to an address addr and returns nothing
+
 void Address_print(struct Address *addr)
 {
-	 // prints out a single set of id, name and email
-	 // of the database entry passed here
 	 printf("%d %s %s\n",
 			addr->id, addr->name, addr->email);
 }
 
-// Function that recieves a connection pointer and returns nothing
+
 void Database_load(struct Connection *conn)
 {
-	 // Try to read data the size of 1 Database structure
-	 // from the file pointer at conn->file
-	 // and send that read information to the same location 
-	 // inside conn->db
 	 int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
-	 // Check to see if it returned 1 piece of data.
-	 // the 1 comes from the THIRD argument in the fread function,
-	 // it is NOT a truth 1. 
+
 	 if(rc != 1) die("Failed to load database.", conn);
 
 	 const int MAX_ROWS = conn->db->MAX_ROWS;
 	 const int MAX_DATA = conn->db->MAX_DATA;
 	 int i = 0;
 	 
-	 conn->db->rows = (struct Address *)malloc(MAX_ROWS * sizeof(struct Address));
+	 conn->db->rows = malloc(MAX_ROWS * sizeof(struct Address));
 	 
 	 for (i = 0; i < MAX_ROWS; ++i) {
 		  rc = fread(&conn->db->rows[i], sizeof(struct Address),
@@ -107,59 +83,40 @@ void Database_load(struct Connection *conn)
 }
 
 
-// Function that returns a pointer of type Connection
-// that recieves a pointer to a char and a character
 struct Connection *Database_open(const char *filename, char mode)
 {
-	 // First allocate memory for the connection
 	 struct Connection *conn = malloc(sizeof(struct Connection));
-	 // if we fail, cry foul.
 	 if(!conn) die("Memory error", conn); 
 
-	 // Do the same thing as above for memory.
-	 // Needs to be in this order because the database depends
-	 // on the connection existing and C does not
-	 // automatically allocate dependencies (Important!)
+
 	 conn->db = malloc(sizeof(struct Database));
 	 if(!conn->db) die("Memory error", conn);
 
-	 // If our mode argument is 'c' for create...
 	 if(mode == 'c') {
-		  // ...create a text file ready for writing
-		  // If the file already exists, truncate it to zero length
 		  conn->file = fopen(filename, "w");
 	 } else {
-		  // ... otherwise open the file ready for writing
-		  // and reading (Just reading would be "r")
 		  conn->file = fopen(filename, "r+");
 
-		  // If the pointer is not null then...
+
 		  if(conn->file) {
-			   // Load the database via current correction
 			   Database_load(conn);
 		  }
-		  // If the pointer is NULL, then wait...
 	 }
-	 // And have it fail here!
+
 	 if(!conn->file) die("Failed to open the file", conn);
-	 // Hence we only return when we either can create a file
-	 // or can load a non-NULL file
-	 // Presumptively, this always returns with a pointer
+	 
 	 return conn;
 }
 
 
-// Function that returns void and accepts arguments
-// of pointer containing type Connection
 void Database_close(struct Connection *conn)
 {
 	 int i = 0;
 	 struct Address *cur_row = NULL;
-	 // If the connection pointer isn't null...
+
 	 if(conn) {
-		  // Then close the file if a file has been opened
+
 		  if(conn->file) fclose(conn->file);
-		  // and free the memory in use for the database struct
 		  if(conn->db) {
 			   if(conn->db->rows) {
 			   		for(i = 0; i < conn->db->MAX_ROWS; i++) {
@@ -186,14 +143,11 @@ void Database_close(struct Connection *conn)
 // a pointer of type Connection
 void Database_write(struct Connection *conn)
 {
-	 // set the file position to the beginning of the file
-	 // So that it's not just at a random point
+
 	 rewind(conn->file);
 
-	 // Try to write to (the start) conn->file 1 element the size
-	 // of a Database struct from the connection database in memory
 	 int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
-	 // If you couldn't write 1 element, then you have failed
+
 	 if(rc != 1) die("Failed to write database", conn);
 
 	 const int MAX_ROWS = conn->db->MAX_ROWS;
@@ -201,41 +155,35 @@ void Database_write(struct Connection *conn)
 	 int i = 0;
 	 
 	 for(i = 0; i < MAX_ROWS; i++) {
-		  rc = fwrite(conn->db->rows, sizeof(struct Address),
+		  rc = fwrite(&conn->db->rows[i], sizeof(struct Address),
 					  1, conn->file);
 		  if(rc != 1) die("Failed to write rows", conn);
 		  
-		  rc = fwrite(conn->db->rows[i].name,
+		  rc = fwrite(&conn->db->rows[i].name,
 					  sizeof(char), MAX_DATA,
 					  conn->file);
 		  if(rc != MAX_DATA) die("Failed to load name", conn);
-		  rc = fwrite(conn->db->rows[i].email,
+		  rc = fwrite(&conn->db->rows[i].email,
 					  sizeof(char), MAX_DATA,
 					  conn->file);
 		  if(rc != MAX_DATA) die("Failed to load name", conn);
 	 }
 
 		  
-	 // Flushes stream
-	 // Which means discarding the data inside of the buffer
-	 // In this case, flushes everything out of conn->file
 	 rc = fflush(conn->file);
-	 // If that fails, then die...?
-	 // weird, man fflush says that 0 is success.
 	 if(rc == -1) die("Cannot flush database.", conn);
 }
 
 
-// Function that returns nothing and recieves a pointer
-// to a variable of type connection
 void Database_create(struct Connection *conn, const int MAX_ROWS, const int MAX_DATA)
 {
 	 int i = 0;
-	 // printf("Boo\n");
-	 // For every possible row...
+
+
 	 conn->db->MAX_ROWS = MAX_ROWS;
 	 conn->db->MAX_DATA = MAX_DATA;
-	 conn->db->rows = (struct Address *)malloc(sizeof(struct Address)*MAX_ROWS);
+	 conn->db->rows = malloc(sizeof(struct Address)*MAX_ROWS);
+	 printf("In Database_create\n");
 	 for(i = 0; i < MAX_ROWS; i++) {
 		  // make a prototype to initialize it
 		  struct Address addr;
