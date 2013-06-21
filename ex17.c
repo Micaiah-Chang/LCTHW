@@ -20,6 +20,7 @@ struct Address {
 
 };
 
+
 // Make a new structure composed out of MAX_ROWS number of Address structs
 struct Database {
 	 // Imagine a 100 entry python list that you can only add 4-tuples
@@ -87,20 +88,24 @@ void Database_load(struct Connection *conn)
 	 const int MAX_ROWS = conn->db->MAX_ROWS;
 	 const int MAX_DATA = conn->db->MAX_DATA;
 	 int i = 0;
-
-//	 struct Address *addr = &conn->db->rows[0];
-	 printf("Max rows: %d\n", MAX_ROWS);
-	 printf("Max Data: %d\n", MAX_DATA);
-	 for(i = 0; i < MAX_ROWS; i++) {
-		  rc = fread(conn->db->rows, sizeof(struct Address),
-					1 , conn->file);
+	 
+	 conn->db->rows = (struct Address *)malloc(MAX_ROWS * sizeof(struct Address));
+	 
+	 for (i = 0; i < MAX_ROWS; ++i) {
+		  rc = fread(&conn->db->rows[i], sizeof(struct Address),
+					 1 , conn->file);
 		  if(rc != 1) die("Failed to load rows.", conn);
-		  rc = fread(&conn->db->rows[i], sizeof(char),
+		  conn->db->rows[i].name = malloc(MAX_DATA);
+		  conn->db->rows[i].email = malloc(MAX_DATA);
+		  rc = fread(&conn->db->rows[i].name, sizeof(char),
 					 MAX_DATA, conn->file);
-		  if(rc != MAX_DATA) die("Failed to load rows.", conn);
+		  if(rc != MAX_DATA) die("Failed to load name.", conn);
+		  rc = fread(&conn->db->rows[i].email, sizeof(char),
+					 MAX_DATA, conn->file);
+		  if(rc != MAX_DATA) die("Failed to load email.", conn);
 	 }
-
 }
+
 
 // Function that returns a pointer of type Connection
 // that recieves a pointer to a char and a character
@@ -191,6 +196,26 @@ void Database_write(struct Connection *conn)
 	 // If you couldn't write 1 element, then you have failed
 	 if(rc != 1) die("Failed to write database", conn);
 
+	 const int MAX_ROWS = conn->db->MAX_ROWS;
+	 const int MAX_DATA = conn->db->MAX_DATA;
+	 int i = 0;
+	 
+	 for(i = 0; i < MAX_ROWS; i++) {
+		  rc = fwrite(conn->db->rows, sizeof(struct Address),
+					  1, conn->file);
+		  if(rc != 1) die("Failed to write rows", conn);
+		  
+		  rc = fwrite(conn->db->rows[i].name,
+					  sizeof(char), MAX_DATA,
+					  conn->file);
+		  if(rc != MAX_DATA) die("Failed to load name", conn);
+		  rc = fwrite(conn->db->rows[i].email,
+					  sizeof(char), MAX_DATA,
+					  conn->file);
+		  if(rc != MAX_DATA) die("Failed to load name", conn);
+	 }
+
+		  
 	 // Flushes stream
 	 // Which means discarding the data inside of the buffer
 	 // In this case, flushes everything out of conn->file
@@ -214,13 +239,13 @@ void Database_create(struct Connection *conn, const int MAX_ROWS, const int MAX_
 	 for(i = 0; i < MAX_ROWS; i++) {
 		  // make a prototype to initialize it
 		  struct Address addr;
-		  addr.id = i;
+		  addr.id= i;
 		  addr.set = 0;
-		  addr.name =  malloc(sizeof(char)*MAX_DATA);
-		  addr.email = malloc(sizeof(char)*MAX_DATA);
-		  // then just assign it
+		  addr.name =     malloc(sizeof(char)*MAX_DATA);
+		  addr.email =  malloc(sizeof(char)*MAX_DATA);
 		  conn->db->rows[i] = addr;
-		  printf("Address: %p\n", &conn->db->rows[i]);
+
+	
 	 }
 }
 
