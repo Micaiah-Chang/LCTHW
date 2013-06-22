@@ -33,6 +33,7 @@ struct Connection {
 
 void Database_close(struct Connection *conn);
 
+
 void die(const char *message, struct Connection *conn)
 {
 	 if(errno) {
@@ -44,6 +45,7 @@ void die(const char *message, struct Connection *conn)
 	 
 	 Database_close(conn); // Free memory
 
+	 if(conn) Database_close(conn);
 	 exit(1);
 }
 
@@ -87,6 +89,7 @@ void Database_load(struct Connection *conn)
 struct Connection *Database_open(const char *filename, char mode)
 {
 	 struct Connection *conn = malloc(sizeof(struct Connection));
+
 	 if(!conn) die("Memory error", conn); 
 
 
@@ -103,6 +106,7 @@ struct Connection *Database_open(const char *filename, char mode)
 			   Database_load(conn);
 		  }
 	 }
+
 
 	 if(!conn->file) die("Failed to open the file", conn);
 	 
@@ -148,6 +152,7 @@ void Database_write(struct Connection *conn)
 	 rewind(conn->file);
 
 	 int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
+
 
 	 if(rc != 1) die("Failed to write database", conn);
 
@@ -212,6 +217,7 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 	 // i.e. we cannot overwrite something in the database
 	 // without deleting first. Have to be explicit
 
+
 	 const int MAX_DATA = conn->db->MAX_DATA;
 	 if(addr->set) die("Already set, delete it first", conn);
 
@@ -223,6 +229,7 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 	
 	 // demonstrate the strncpy bug
 	 if(!res) die("Name copy failed", conn);
+
 	 
 	 // Same thing as above
 	 res = strncpy(addr->email, email, MAX_DATA);
@@ -252,6 +259,30 @@ void Database_get(struct Connection *conn, int id)
 	 }
 }
 
+void Database_find(struct Connection *conn, char *term)
+{
+	 int i = 0;
+	 int rc = 0;
+	 int MAX_ROWS = conn->db->MAX_ROWS;
+
+	 for(i = 0; i < MAX_ROWS; i++){
+		  struct Address *addr = &conn->db->rows[i];
+		  if (addr->set) {
+		
+			   if(addr->set) rc = strncmp(term, addr->name,
+										  sizeof(term));
+
+			   if(rc != 0) rc = strcmp(term, addr->email);
+		
+			   if(rc == 0) {
+					Address_print(addr);
+					break;
+			   }
+		  }
+	 }
+
+}
+
 
 // Function which returns nothing
 // and accepts a pointer of type connection and an integer
@@ -268,6 +299,7 @@ void Database_delete(struct Connection *conn, int id)
 	 memset(addr->name, 0, MAX_DATA);
 	 memset(addr->email, 0, MAX_DATA);
 	 // Then set the row of the database concerned to this 'zero' address
+
 
 	 if(conn->db->rows[id].name)  free(conn->db->rows[id].name);
 	 if(conn->db->rows[id].email)   free(conn->db->rows[id].email);
@@ -307,6 +339,7 @@ int main(int argc, char *argv[])
 	 // If you don't provide enough arguments, shut down
 	 // And say what format your command needs to be
 	 if(argc < 3) die("USAGE: ex17 <dbfile> <action> [action params]", NULL);
+
 	 // No connection established so the connection is null
 
 	 // Following the error message
@@ -337,6 +370,7 @@ int main(int argc, char *argv[])
 	 
 	 // If that number is bigger than the biggest number of rows
 	 // Then cry and fail
+
 	 // if(id >= MAX_ROWS) die("There's not that many records.", conn);
 
 	 // Now check the action:
@@ -364,7 +398,9 @@ int main(int argc, char *argv[])
 		  // When setting aka creating an entry in the database
 	 case 's':
 		  // Check to see you have exactly 6 arguments
+
 		  if(argc != 6) die("Need id, name, email to set", conn);
+
 
 		  // Then set stuff using what you think to be
 		  // id, name, email
@@ -373,6 +409,14 @@ int main(int argc, char *argv[])
 		  Database_write(conn);
 		  break;
 
+	 case 'u':
+		  if (argc != 6) die("Need id, name, email to update",
+							 conn);
+		  Database_delete(conn,id);
+		  Database_set(conn, id, argv[4], argv[5]);
+		  Database_write(conn);
+		  break;
+		  
 		  // Finally, if we want to delete it
 	 case 'd':
 		  // We only need the id so...
@@ -393,8 +437,18 @@ int main(int argc, char *argv[])
 
 		  // If your action matches nothing, then simply
 		  // tell the user the right actions
+
+	 case 'f':
+		  if(argc != 4) die("Need a term to search", conn);
+		  Database_find(conn, argv[3]);
+		  break;
+
+	 
+		  
 	 default:
-		  die("Invalid action, only: c=create, g=get, s=set, d=delete", conn);
+
+		  die("Invalid action, only: c=create, g=get, s=set, d=delete f=find, u=update", conn);
+
 	 }
 	 // Finally, close the database so there are no memory leaks
 	 Database_close(conn);

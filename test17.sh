@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 make ex17
 echo valgrind y/n?
 read valgrind
@@ -34,7 +35,10 @@ echo Deleting the third row...
 $prefix ./bin/ex17 db.bat d 3
 
 echo Getting the second one...
-$prefix ./bin/ex17 db.bat g 2
+./bin/ex17 db.bat g 2
+
+echo finding zed...
+$prefix ./bin/ex17 db.bat f zed
 
 echo Cleaning up...
 rm db.bat
