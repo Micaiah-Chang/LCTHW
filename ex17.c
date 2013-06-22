@@ -1,23 +1,15 @@
-// Include all the requisite libraries
-
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
 
-// Define the two below as constants by the C pre-processor. 
-/* #define MAX_DATA 512 */
-/* #define MAX_ROWS 100 */
-
 struct Address {
 	 int id;
 	 int set;
 	 char *name;
 	 char *email;
-
 };
-
 
 
 struct Database {
@@ -38,57 +30,21 @@ void die(const char *message, struct Connection *conn)
 	 if(errno) {
 		  perror(message);
 	 } else {
-
 		  printf("ERROR: %s\n", message);
 	 }
+	 Database_close(conn);
 	 
-	 Database_close(conn); // Free memory
-
 	 exit(1);
-}
-
-
-void Address_print(struct Address *addr)
-{
-	 printf("%d %s %s\n",
-			addr->id, addr->name, addr->email);
-}
-
-
-void Database_load(struct Connection *conn)
-{
-	 int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
-
-	 if(rc != 1) die("Failed to load database.", conn);
-
-	 const int MAX_ROWS = conn->db->MAX_ROWS;
-	 const int MAX_DATA = conn->db->MAX_DATA;
-	 int i = 0;
 	 
-	 conn->db->rows = malloc(MAX_ROWS * sizeof(struct Address));
-	 
-	 for (i = 0; i < MAX_ROWS; ++i) {
-		  rc = fread(&conn->db->rows[i], sizeof(struct Address),
-					 1 , conn->file);
-		  if(rc != 1) die("Failed to load rows.", conn);
-		  conn->db->rows[i].name = malloc(sizeof(char)*MAX_DATA);
-		  conn->db->rows[i].email = malloc(sizeof(char)*MAX_DATA);
-		  rc = fread(conn->db->rows[i].name, sizeof(char),
-					 MAX_DATA, conn->file);
-		  if(rc != MAX_DATA) die("Failed to load name.", conn);
-		  rc = fread(conn->db->rows[i].email, sizeof(char),
-					 MAX_DATA, conn->file);
-		  if(rc != MAX_DATA) die("Failed to load email.", conn);
-
-	 }
 }
+
+
 
 
 struct Connection *Database_open(const char *filename, char mode)
 {
 	 struct Connection *conn = malloc(sizeof(struct Connection));
-	 if(!conn) die("Memory error", conn); 
-
+	 if(!conn) die("Memory error", conn);
 
 	 conn->db = malloc(sizeof(struct Database));
 	 if(!conn->db) die("Memory error", conn);
@@ -98,45 +54,37 @@ struct Connection *Database_open(const char *filename, char mode)
 	 } else {
 		  conn->file = fopen(filename, "r+");
 
-
 		  if(conn->file) {
 			   Database_load(conn);
 		  }
 	 }
 
 	 if(!conn->file) die("Failed to open the file", conn);
+
 	 
 	 return conn;
 }
 
-
 void Database_close(struct Connection *conn)
 {
 	 int i = 0;
-	 struct Address *cur_row = NULL;
-
+	 
 	 if(conn) {
-
 		  if(conn->file) fclose(conn->file);
 		  if(conn->db) {
 			   if(conn->db->rows) {
-			   		for(i = 0; i < conn->db->MAX_ROWS; i++) {
-						 cur_row = &conn->db->rows[i];
-						 if(cur_row) {
-							  free(cur_row->name);
-							  free(cur_row->email); 
-						 }
-			   		}
+					for(i = 0; i < conn->db->MAX_ROWS; i++){
+						 if(conn->db->rows[i].name)  free(conn->db->rows[i].name);
+						 if(conn->db->rows[i].email)  free(conn->db->rows[i].email);
+					}
 					free(conn->db->rows);
 			   }
 			   free(conn->db);
 		  }
-		  // Of course, we shold always free the memory associated with
-		  // the connection data structure.
 		  free(conn);
 	 }
-
 }
+
 
 
 
@@ -302,26 +250,15 @@ void Database_list(struct Connection *conn)
 }
 
 // Finally! The main function!
+
 int main(int argc, char *argv[])
 {
-	 // If you don't provide enough arguments, shut down
-	 // And say what format your command needs to be
-	 if(argc < 3) die("USAGE: ex17 <dbfile> <action> [action params]", NULL);
-	 // No connection established so the connection is null
-
-	 // Following the error message
-	 // The first not ex17 arg is the name of the database file
 	 char *filename = argv[1];
-	 // Then a character dictating the switch statement
-	 // Notice that only the first letter is read. So we could
-	 // in theory use the entire word
 	 char action = argv[2][0];
-	 // Establish a connection by opening a database with the requisite
-	 // action. Only 'c' or not 'c' matters.
 	 struct Connection *conn = Database_open(filename, action);
-	 // initialize id variable
 	 int id = 0;
 	 
+
 	 int MAX_ROWS = 0;
 	 int MAX_DATA = 0;
 	 // If there are more than 3 variables, then convert the 4th arg
@@ -399,5 +336,6 @@ int main(int argc, char *argv[])
 	 // Finally, close the database so there are no memory leaks
 	 Database_close(conn);
 
+	 
 	 return 0;
 }

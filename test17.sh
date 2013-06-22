@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -e
 make ex17
 echo valgrind y/n?
 read valgrind
