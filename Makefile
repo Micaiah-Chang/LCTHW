@@ -3,6 +3,9 @@ CFLAGS=-Wall -g
 clean:
 	rm -f ./bin/*
 
+stack:
+	cc stack.c -o ./bin/stack
+
 ex18:
 	cc ex18.c -o ./bin/ex18
 
