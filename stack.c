@@ -84,6 +84,15 @@ void destroy_stack(struct List *lst)
 	 }
 }
 
+void print_isempty(struct List *lst)
+{
+	 if(stack_is_empty(lst)) {
+		  printf("Stack is empty.\n");
+	 } else {
+		  printf("Stack is not empty.\n");
+	 }
+}
+
 void print_stack(struct List *lst)
 {
 	 struct Node *cur_node = lst->head;
@@ -102,28 +111,29 @@ int main(int argc, char *argv[])
 
 	 struct List *lst = stack_init();
 
-	 if(stack_is_empty(lst)) {
-		  printf("Stack is empty.\n");
-	 } else {
-		  printf("Stack is not empty.\n");
-	 }
+	 print_isempty(lst);
 	 
 	 for(i = 0; i < count; i++)	 stack_push(lst, inputs[i]);
 	 print_stack(lst);
 
+	 print_isempty(lst);
+	 
 	 stack_peek(lst);
 	 
-	 if(stack_is_empty(lst)) {
-		  printf("Stack is empty.\n");
-	 } else {
-		  printf("Stack is not empty.\n");
-	 }
+
 
 	 struct Node *node = stack_pop(lst);
+	 while(lst->head) {
+		  printf("Popped item: %s\n", node->item);
+		  free(node->item);
+		  free(node);
+		  print_stack(lst);
+		  node = stack_pop(lst);
+	 }
 	 printf("Popped item: %s\n", node->item);
 	 free(node->item);
 	 free(node);
-	 print_stack(lst);
-	 
+
+	 print_isempty(lst);
 	 destroy_stack(lst);
 }
