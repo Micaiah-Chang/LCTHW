@@ -1,15 +1,12 @@
-#include <assert.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "mechanics.h"
 
 int Monster_attack(void *self, int damage)
 {
-	 assert(self != NULL);
-	 assert(damage >= 0);
-	 
 	 Monster *monster = self;
 
 	 printf("You attack %s!\n", monster->_(description));
@@ -27,7 +24,6 @@ int Monster_attack(void *self, int damage)
 
 int Monster_init(void *self)
 {
-	 assert(self != NULL);
 	 Monster *monster = self;
 	 monster->hit_points = 10;
 	 return 1;
@@ -38,12 +34,8 @@ Object MonsterProto = {
 	 .attack = Monster_attack
 };
 
-
 void *Room_move(void *self, Direction direction)
 {
-	 assert(self != NULL);
-	 assert((direction >= 0) && (direction < 4));
-
 	 Room *room = self;
 	 Room *next = NULL;
 
@@ -57,7 +49,7 @@ void *Room_move(void *self, Direction direction)
 		  printf("You go east, into:\n");
 		  next = room->east;
 	 } else if(direction == WEST && room->west) {
-		  printf("You go west, into:\n");
+		  printf("You go west into:\n");
 		  next = room->west;
 	 } else {
 		  printf("You can't go that direction.");
@@ -71,12 +63,8 @@ void *Room_move(void *self, Direction direction)
 	 return next;
 }
 
-
 int Room_attack(void *self, int damage)
 {
-	 assert(self != NULL);
-	 assert(damage >= 0);
-	 
 	 Room *room = self;
 	 Monster *monster = room->bad_guy;
 
@@ -88,7 +76,6 @@ int Room_attack(void *self, int damage)
 		  return 0;
 	 }
 }
-
 
 Object RoomProto = {
 	 .move = Room_move,
@@ -127,13 +114,14 @@ int process_input(Map *game)
 		  break;
 
 	 case 'a':
+
 		  game->_(attack)(game, damage);
 		  break;
 	 case 'l':
 		  printf("You can go:\n");
 		  if(game->location->north) printf("NORTH\n");
 		  if(game->location->south) printf("SOUTH\n");
-		  if(game->location->east) printf("EAST\n");
+		  if(game->location->east) printf("EAST\n");		  
 		  if(game->location->west) printf("WEST\n");
 		  break;
 
