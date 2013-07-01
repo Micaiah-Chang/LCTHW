@@ -121,7 +121,7 @@ int process_input(Map *game)
 		  printf("You can go:\n");
 		  if(game->location->north) printf("NORTH\n");
 		  if(game->location->south) printf("SOUTH\n");
-		  if(game->location->east) printf("EAST\n");		  
+		  if(game->location->east) printf("EAST\n");
 		  if(game->location->west) printf("WEST\n");
 		  break;
 
