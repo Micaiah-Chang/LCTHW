@@ -1,7 +1,10 @@
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -DNDEBUG
 
 clean:
 	rm -f ./bin/*
+
+ex20:
+	cc -Wall -g -DNDEBUG ex20.c -o ./bin/ex20
 
 stack:
 	cc stack.c -o ./bin/stack
@@ -74,3 +77,4 @@ all:
 	cc ex16.c -o ./bin/ex16
 	cc ex17.c -o ./bin/ex17
 	cc ex18.c -o ./bin/ex18
+	cc ex20.c -o ./bin/ex20
