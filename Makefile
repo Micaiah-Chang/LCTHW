@@ -1,7 +1,10 @@
-CFLAGS=-Wall -g -DNDEBUG
+CFLAGS=-Wall -g  -DNDEBUG
 
 clean:
 	rm -f ./bin/*
+
+ex22_main: ex22.o
+
 
 ex20:
 	cc -Wall -g -DNDEBUG ex20.c -o ./bin/ex20
