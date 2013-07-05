@@ -43,12 +43,9 @@ int main(int argc, char *argv[])
 	 print_size();
 
 	 // test the ratio function static
-	 log_info("Ratio at first. %f", *(update_ratio(2.0)));
-	 
-	 log_info("Ratio again: %f", *(update_ratio(10.0)));
-	 double *temp_var = update_ratio(15.0);
-	 *temp_var = 20;
-	 log_info("Ratio once more: %f", *(update_ratio(300.0)));
+	 log_info("Ratio at first. %f", update_ratio(2.0));
+	 log_info("Ratio again: %f", update_ratio(10.0));
+	 log_info("Ratio once more: %f", update_ratio(300.0));
 
 	 // test the scope demo
 	 int count = 4;

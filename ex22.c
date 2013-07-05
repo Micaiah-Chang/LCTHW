@@ -16,15 +16,14 @@ void set_age(int age)
 	 THE_AGE = age;
 }
 
-double *update_ratio(double new_ratio)
+double update_ratio(double new_ratio)
 {
 	 static double ratio = 1.0;
 
 	 double old_ratio = ratio;
-	 log_info("ratio in func is: %f", ratio);
 	 ratio = new_ratio;
 
-	 return &ratio;
+	 return old_ratio;
 }
 
 

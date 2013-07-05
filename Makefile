@@ -2,6 +2,8 @@ CFLAGS=-Wall -g  -DNDEBUG
 
 clean:
 	rm -f ./bin/*
+	rm -f ex22.o
+	rm -f ex22_main
 
 ex22_main: ex22.o
 
