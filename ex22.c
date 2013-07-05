@@ -6,9 +6,9 @@ int THE_SIZE = 1000;
 
 static int THE_AGE = 37;
 
-int get_age()
+int *get_age()
 {
-	 return THE_AGE;
+	 return &THE_AGE;
 }
 
 void set_age(int age)

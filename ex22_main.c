@@ -22,13 +22,17 @@ void scope_demo(int count)
 
 int main(int argc, char *argv[])
 {
+	 int *temp = 0;
 	 // test out THE_AGE accessors
-	 log_info("My name: %s, age: %d", MY_NAME, get_age());
+	 log_info("My name: %s, age: %d", MY_NAME, *(get_age()));
+	 temp = get_age();
 
 	 set_age(100);
+	 log_info("My age is now %d", *(get_age()));
+	 *temp = 3;
 
-	 log_info("My age is now %d", get_age());
-
+	 log_info("After reassigning in main, age is: %d", *(get_age()));
+	 
 	 // test out THE_SIZE extern
 	 log_info("THE_SIZE is: %d", THE_SIZE);
 	 print_size();
