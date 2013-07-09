@@ -5,6 +5,9 @@ clean:
 	rm -f ex22.o
 	rm -f ex22_main
 
+ex23:
+	cc ex23.c -lrt -o ./bin/ex23
+
 ex22_main: ex22.o
 
 
@@ -83,3 +86,4 @@ all:
 	cc ex17.c -o ./bin/ex17
 	cc ex18.c -o ./bin/ex18
 	cc ex20.c -o ./bin/ex20
+

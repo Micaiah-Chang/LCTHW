@@ -1,6 +1,55 @@
 #include <stdio.h>
 #include <string.h>
 #include "dbg.h"
+#include <time.h>
+
+#define CASE1(action, N) case (N-1): action;
+#define CASE2(action, N) case (N-2): action;
+#define CASE3(action, N) case (N-3): action;
+#define CASE4(action, N) case (N-4): action;
+#define CASE5(action, N) case (N-5): action;
+#define CASE6(action, N) case (N-6): action;
+#define CASE7(action, N) case (N-7): action;
+#define CASE8(action, N) case (N-8): action;
+
+#define DEVICE8(action, N) \
+	 CASE1(action,N) \
+	 CASE2(action,N) \
+	 CASE3(action,N) \
+	 CASE4(action,N) \
+	 CASE5(action,N) \
+	 CASE6(action,N) \
+	 CASE7(action,N) \
+	 CASE8(action,N)
+
+
+/* #define DUFF_DEVICE(action, count, N)			\ */
+ /* int count_ = (count); \  */
+/* 	 int n_ = (count + N - 1) / N; \ */
+/* 	 switch(count % N) { \ */
+/* 	 case 0: do  { action;						\ */
+/* 			   DEVICE8(action, N)				\ */
+/* 		  DEVICE8(action, (N-8))				\ */
+/* 		  DEVICE8(action, (N-16))				\ */
+/* 		  DEVICE8(action, (N-24))				\ */
+/* 		  } while (n_-- > 0);					\ */
+/* 	 } */
+
+#define DUFF_DEVICE_8(aCount, aAction) \
+	 int count_ = (aCount);			   \
+	 int times_ = (count_ + 7) >> 3;   \
+	 switch (count_ & 7){			   \
+case 0: do { aAction;				   \
+		  case 7: aAction;			   \
+		  case 6: aAction;			   \
+		  case 5: aAction;			   \
+		  case 4: aAction;			   \
+		  case 3: aAction;			   \
+		  case 2: aAction;			   \
+		  case 1: aAction;			   \
+		  } while (--times_ > 0);	   \
+	 }								   \
+
 
 int normal_copy(char *from, char *to, int count)
 {
@@ -13,6 +62,13 @@ int normal_copy(char *from, char *to, int count)
 	 return i;
 }
 
+
+int Micaiahs_device(char *from, char *to, int count) {
+	 {
+	 DUFF_DEVICE_8(*to++ = *from++, count)
+		  }
+	 return count;
+}
 
 int duffs_device(char *from, char *to, int count)
 {
@@ -72,34 +128,96 @@ int valid_copy(char *data, int count, char expects)
 
 int main(int argc, char *argv[])
 {
-	 char from[1000] = {'a'};
-	 char to[1000] = {'c'};
+	 char from[10000] = {'a'};
+	 char to[10000] = {'c'};
 	 int rc = 0;
+	 struct timespec before;
 
 	 // setup the from to have some stuff
-	 memset(from, 'x', 1000);
+	 memset(from, 'x', 10000);
 	 // set it to a failure mode
-	 memset(to, 'y', 1000);
-	 check(valid_copy(to, 1000, 'y'), "Not initialized right.");
+	 memset(to, 'y', 10000);
+	 check(valid_copy(to, 10000, 'y'), "Not initialized right.");
 
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 
 	 // use normal copy to
-	 rc = normal_copy(from, to, 1000);
-	 check(rc == 1000, "Normal copy failed: %d", rc);
-	 check(valid_copy(to, 1000, 'x'), "Normal copy failed.");
+	 rc = normal_copy(from, to, 10000);
+	 check(rc == 10000, "Normal copy failed: %d", rc);
+	 check(valid_copy(to, 10000, 'x'), "Normal copy failed.");
 
+	 struct timespec after;
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("Normal copy: %ld", (after.tv_nsec-before.tv_nsec));
+	 
 	 //reset
-	 memset(to, 'y', 1000);
+	 memset(to, 'y', 10000);
 
-	 // duffs version
-	 rc = duffs_device(from, to, 1000);
-	 check(rc == 1000, "Duff's device failed: %d", rc);
-	 check(valid_copy(to, 1000, 'x'), "Duff's device failed copy.");
 
+	 clock_gettime(CLOCK_REALTIME, &before);
+     // duffs version
+	 rc = duffs_device(from, to, 10000);
+	 check(rc == 10000, "Duff's device failed: %d", rc);
+	 check(valid_copy(to, 10000, 'x'), "Duff's device failed copy.");
+
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("Duff's Device: %ld", (after.tv_nsec-before.tv_nsec));
+
+	 memset(to, 'y', 10000);
+	 
+	 clock_gettime(CLOCK_REALTIME, &before);
 	 // reset
-	 rc = zeds_device(from, to, 1000);
-	 check(rc == 1000, "Zed's device failed: %d", rc);
-	 check(valid_copy(to, 1000, 'x'), "Zed's device failed copy.");
+	 rc = zeds_device(from, to, 10000);
+	 check(rc == 10000, "Zed's device failed: %d", rc);
+	 check(valid_copy(to, 10000, 'x'), "Zed's device failed copy.");
 
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("Zeds Device: %ld", (after.tv_nsec-before.tv_nsec));
+
+
+	 /* memset(to, 'y', 10000); */
+	 
+	 /* clock_gettime(CLOCK_REALTIME, &before); */
+	 
+	 /* rc = Micaiahs_device(from, to, 10000); */
+	 /* check(rc == 10000, "Micaiah's device failed %d", rc); */
+	 /* check(valid_copy(to, 10000, 'x'), "Micaiah's device failed copy."); */
+
+	 /* clock_gettime(CLOCK_REALTIME, &after); */
+	 /* log_info("Micaiahs_device: %ld", (after.tv_nsec-before.tv_nsec)); */
+
+	 memset(to, 'y', 10000);
+
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 
+	 memcpy(to, from, 10000);
+	 // check(rc == 10000, "memcpy failed %d", rc);
+	 check(valid_copy(to, 10000, 'x'), "memcpy failed copy.");
+
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("memcpy: %ld", (after.tv_nsec-before.tv_nsec));
+
+	 memset(to, 'y', 10000);
+
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 
+	 memmove(to, from, 10000);
+	 // check(rc == 10000, "memcpy failed %d", rc);
+	 check(valid_copy(to, 10000, 'x'), "memmove failed copy.");
+
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("memmove: %ld", (after.tv_nsec-before.tv_nsec));
+
+	 memset(to, 'y', 10000);
+
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 
+	 memset(to, 'x', 10000);
+	 check(valid_copy(to, 10000, 'x'), "memset failed copy.");
+
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("memset: %ld", (after.tv_nsec-before.tv_nsec));
+	 
 	 return 0;
 error:
 	 return 1;
