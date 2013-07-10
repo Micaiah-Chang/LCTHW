@@ -25,17 +25,25 @@ int main(int argc, char *argv[])
 	 Person you = {.age = 0};
 	 int i = 0;
 	 char *in = NULL;
-
+	 
+	 
 	 printf("What's your First Name? ");
 	 in = fgets(you.first_name, MAX_DATA-1, stdin);
+	 // in = gets(you.first_name);
+	 // int rc = fscanf(stdin, "%50s", you.first_name);
 	 check(in !=NULL, "Failed to read first name.");
+	 //check(rc > 0, "Failed to read first name.");
 
 	 printf("What's your Last Name? ");
-	 in = fgets(you.last_name, MAX_DATA-1, stdin);
+	  in = fgets(you.last_name, MAX_DATA-1, stdin);
+	 //in = gets(you.last_name);	 
+	 // rc = fscanf(stdin, "%50s", you.last_name);
 	 check(in != NULL, "Failed to read last name.");
-
+	 // check(rc > 0, "Failed to read last name.");
+	 
 	 printf("How old are you? ");
 	 int rc = fscanf(stdin, "%d", &you.age);
+	 // rc = fscanf(stdin, "%d", &you.age);
 	 check(rc > 0, "You have to enter a number.");
 
 	 printf("What color are your eyes:\n");
@@ -46,11 +54,11 @@ int main(int argc, char *argv[])
 	 printf("> ");
 
 	 int eyes = -1;
-	 rc =fscanf(stdin, "%d", &eyes);
+	 rc = fscanf(stdin, "%d", &eyes);
 	 check(rc > 0, "You have to enter a number.");
 
 	 you.eyes = eyes -1;
-	 check(you.eyes <= OTHER_EYES && you.eyes >= 0, "Do it right, that's not an option");
+	 // check(you.eyes <= OTHER_EYES && you.eyes >= 0, "Do it right, that's not an option");
 
 	 printf("How much do you make an hour? ");
 	 rc = fscanf(stdin, "%f", &you.income);
