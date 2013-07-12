@@ -4,6 +4,8 @@
 
 #define MAX_DATA 100
 
+
+
 void strip_whitespace(char *input, const int count)
 {
 	 int i = 0;
@@ -21,6 +23,26 @@ void strip_whitespace(char *input, const int count)
 		  input[j] = temp[i];
 		  j++;
 	 }
+}
+
+int fill_in_names(char *name, int count)
+{
+	 char current_char = ' ';
+	 int rc = 1;
+	 int i = 0;
+	 
+	 while(current_char != '\n' && i < count) {
+		  rc = scanf("%c", &current_char);
+		  check(rc > 0, "");
+		  name[i] = current_char;
+		  i++;
+	 }
+
+	 name[count] = '\0';
+	 fflush(stdin);
+	 return 1;
+error:
+	 return -1;
 }
 
 typedef enum EyeColor {
@@ -47,17 +69,22 @@ int main(int argc, char *argv[])
 	 char *in = NULL;
 
 	 printf("What's your First Name? ");
-	 in = fgets(you.first_name, MAX_DATA-1, stdin);
-	 check(in !=NULL, "Failed to read first name.");
+//	 in = fgets(you.first_name, MAX_DATA-1, stdin);
+//	 check(in !=NULL, "Failed to read first name.");
+	 int rc = fill_in_names(you.first_name, MAX_DATA);
+	 check(rc > 0, "Failed to read first name.");
 	 strip_whitespace(you.first_name, sizeof(you.first_name));
 
 	 printf("What's your Last Name? ");
-	 in = fgets(you.last_name, MAX_DATA-1, stdin);
-	 check(in != NULL, "Failed to read last name.");
+//	 in = fgets(you.last_name, MAX_DATA-1, stdin);
+//	 check(in != NULL, "Failed to read last name.");
+	 rc = fill_in_names(you.last_name, MAX_DATA);
+	 check(rc > 0, "Failed to read last name.");
 	 strip_whitespace(you.last_name, sizeof(you.last_name));
 	 
 	 printf("How old are you? ");
-	 int rc = scanf("%d", &you.age);
+//	 int rc = scanf("%d", &you.age);
+	 rc = scanf("%d", &you.age);
 	 check(rc > 0, "You have to enter a number.");
 
 	 printf("What color are your eyes:\n");
