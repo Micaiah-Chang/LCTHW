@@ -1,7 +1,27 @@
 #include <stdio.h>
+#include <ctype.h>
 #include "dbg.h"
 
 #define MAX_DATA 100
+
+void strip_whitespace(char *input, const int count)
+{
+	 int i = 0;
+	 int j = 0;
+	 char temp[count];
+
+	 for(i = 0; i < count; i++) {
+		  temp[i] = input[i];
+	 }
+	 
+	 for(i = 0; i < count; i++) {
+		  if(isspace(temp[i])) {
+			   continue;
+		  }
+		  input[j] = temp[i];
+		  j++;
+	 }
+}
 
 typedef enum EyeColor {
 	 BLUE_EYES, GREEN_EYES, BROWN_EYES,
@@ -29,13 +49,15 @@ int main(int argc, char *argv[])
 	 printf("What's your First Name? ");
 	 in = fgets(you.first_name, MAX_DATA-1, stdin);
 	 check(in !=NULL, "Failed to read first name.");
+	 strip_whitespace(you.first_name, sizeof(you.first_name));
 
 	 printf("What's your Last Name? ");
 	 in = fgets(you.last_name, MAX_DATA-1, stdin);
 	 check(in != NULL, "Failed to read last name.");
-
+	 strip_whitespace(you.last_name, sizeof(you.last_name));
+	 
 	 printf("How old are you? ");
-	 int rc = fscanf(stdin, "%d", &you.age);
+	 int rc = scanf("%d", &you.age);
 	 check(rc > 0, "You have to enter a number.");
 
 	 printf("What color are your eyes:\n");
@@ -46,20 +68,20 @@ int main(int argc, char *argv[])
 	 printf("> ");
 
 	 int eyes = -1;
-	 rc =fscanf(stdin, "%d", &eyes);
+	 rc = scanf("%d", &eyes);
 	 check(rc > 0, "You have to enter a number.");
 
 	 you.eyes = eyes -1;
 	 check(you.eyes <= OTHER_EYES && you.eyes >= 0, "Do it right, that's not an option");
 
 	 printf("How much do you make an hour? ");
-	 rc = fscanf(stdin, "%f", &you.income);
+	 rc = scanf("%f", &you.income);
 	 check(rc > 0, "Enter a floating point number.");
 
 	 printf("----- RESULTS -----\n");
 
-	 printf("First Name: %s", you.first_name);
-	 printf("Last Name: %s", you.last_name);
+	 printf("First Name: %s\n", you.first_name);
+	 printf("Last Name: %s\n", you.last_name);
 	 printf("Age: %d\n", you.age);
 	 printf("Eyes: %s\n", EYE_COLOR_NAMES[you.eyes]);
 	 printf("Income: %f\n", you.income);
