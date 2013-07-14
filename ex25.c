@@ -10,10 +10,21 @@
 int read_string(char **out_string, int max_buffer)
 {
 	 *out_string = calloc(1, max_buffer + 1);
+	 // *out_string = malloc(max_buffer + 1);
 	 check_mem(*out_string);
 
-	 char *result = fgets(*out_string, max_buffer, stdin);
-	 check(result != NULL, "Input error");
+	 /* char *result = fgets(*out_string, max_buffer, stdin); */
+	 /* check(result != NULL, "Input error"); */
+	 int i = 0;
+	 char input = ' ';
+
+	 do {
+		  input = fgetc(stdin);
+		  if(input == '\0') break;
+		  (*out_string)[i] = input;
+		  i++;
+	 } while(input != '\0' && input != '\n' && i < max_buffer);
+	 (*out_string)[max_buffer-1] = '\0';
 
 	 return 0;
 
