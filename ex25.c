@@ -95,6 +95,62 @@ error:
 	 return -1;
 }
 
+int print_int(int out_int)
+{
+//	 int rc = puts(_itoa(*out_int));
+//	 check(rc > 0, "Failed to print integer.");
+	 return 0;
+
+error:
+	 return -1;
+}
+
+int print_string(const char *fmt, ...)
+{
+	 int i = 0;
+	 int rc = 0;
+	 int out_int = 0;
+
+	 char out_char = '\0';
+
+	 va_list argp;
+	 va_start(argp, fmt);
+	 for(i = 0; fmt[i] != '\0'; i++) {
+		  if(fmt[i] == '%') {
+			   i++;
+			   switch(fmt[i]) {
+			   case '\0':
+					sentinel("Invalid format, you ended with %%.");
+					break;
+
+			   case 'd':
+					out_int = va_arg(argp, int);
+					rc = print_int(out_int);
+					check(rc == 0, "Failed to read int.");
+					break;
+
+			   case 'c':
+					out_char = va_arg(argp, int);
+					putchar(out_char);
+					break;
+
+			   default:
+					sentinel("Invalid format.");
+			   }
+			   
+		  } else {
+			   putchar(fmt[i]);
+		  }
+
+	 }
+	 
+	 va_end(argp);
+	 return 0;
+
+error:
+	 return -1;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -120,7 +176,7 @@ int main(int argc, char *argv[])
 
 	 printf("---- RESULTS ----\n");
 	 printf("First Name: %s", first_name);
-	 printf("Initial: '%c'\n", initial);
+	 print_string("Initial: '%c'\n", initial);
 	 printf("Last Name: %s", last_name);
 	 printf("Age: %d\n", age);
 
