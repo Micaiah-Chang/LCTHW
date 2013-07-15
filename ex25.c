@@ -6,6 +6,9 @@
 #include "dbg.h"
 
 #define MAX_DATA 100
+#define CHAR_MAX 256
+
+char *convert_to_string(int input);
 
 int read_string(char **out_string, int max_buffer)
 {
@@ -95,14 +98,50 @@ error:
 	 return -1;
 }
 
+
 int print_int(int out_int)
 {
-//	 int rc = puts(_itoa(*out_int));
-//	 check(rc > 0, "Failed to print integer.");
+	 char *input = NULL;
+	 input = convert_to_string(out_int);
+	 check(input != NULL, "Failed to convert integer");
+	 int i = 0;
+	 for(i = 0; i < MAX_DATA + 2; i++) {
+		  int rc = putchar(input[i]);
+		  check(rc >= 0, "Failed to print integer.");
+	 }
+	 free(input);
 	 return 0;
 
 error:
+	 if(input) free(input);
 	 return -1;
+}
+
+char *convert_to_string(int input)
+{
+	 char *output = malloc(MAX_DATA + 2);
+	 // Needs 2 for sign and null terminator
+
+	 int len = 0;
+	 for(; input > 0; len++) {
+		  output[len] = (input % 10) + '0';
+		  input /= 10;
+	 }
+	 output[len] = '\0';
+
+	 // Reversing string
+	 int i = 0;
+	 char temp = 0;
+	 for(i = 0; i < len / 2; i++) {
+		  temp = output[i];
+		  output[i] = output[len-i-1];
+		  output[len-i-1] = temp;
+	 }
+	 check(output != NULL, "String reverse failed.");
+
+	 return output;
+error:
+	 return NULL;
 }
 
 int print_string(const char *fmt, ...)
@@ -112,6 +151,7 @@ int print_string(const char *fmt, ...)
 	 int out_int = 0;
 
 	 char out_char = '\0';
+	 char *out_string = NULL;
 
 	 va_list argp;
 	 va_start(argp, fmt);
@@ -132,6 +172,14 @@ int print_string(const char *fmt, ...)
 			   case 'c':
 					out_char = va_arg(argp, int);
 					putchar(out_char);
+					break;
+
+			   case 's':
+					out_string = va_arg(argp, char*);
+					int i = 0;
+					for(i = 0; i < MAX_DATA; i++) {
+						 putchar(out_string[i]);
+					}	 
 					break;
 
 			   default:
@@ -159,26 +207,26 @@ int main(int argc, char *argv[])
 	 char *last_name = NULL;
 	 int age = 0;
 
-	 printf("What's your first name? ");
+	 print_string("What's your first name? ");
 	 int rc = read_scan("%s", MAX_DATA, &first_name);
 	 check(rc == 0, "Failed first name.");
 
-	 printf("What's your initial? ");
+	 print_string("What's your initial? ");
 	 rc = read_scan("%c\n", &initial);
 	 check(rc == 0, "Failed inital.");
 
-	 printf("What's your last name? ");
+	 print_string("What's your last name? ");
 	 rc = read_scan("%s", MAX_DATA, &last_name);
 	 check(rc == 0, "Failed last name.");
 
-	 printf("How old are you? ");
+	 print_string("How old are you? ");
 	 rc = read_scan("%d", &age);
 
-	 printf("---- RESULTS ----\n");
-	 printf("First Name: %s", first_name);
+	 print_string("---- RESULTS ----\n");
+	 print_string("First Name: %s", first_name);
 	 print_string("Initial: '%c'\n", initial);
-	 printf("Last Name: %s", last_name);
-	 printf("Age: %d\n", age);
+	 print_string("Last Name: %s", last_name);
+	 print_string("Age: %d\n", age);
 
 	 free(first_name);
 	 free(last_name);
