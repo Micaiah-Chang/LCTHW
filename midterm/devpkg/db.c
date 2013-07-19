@@ -84,7 +84,7 @@ int DB_init()
 {
 	 apr_pool_t *p = NULL;
 	 apr_pool_initialize();
-	 apr_poll_create(&p, NULL);
+	 apr_pool_create(&p, NULL);
 
 	 if(access(DB_DIR, W_OK | X_OK) == -1) {
 		  apr_status_t rc = apr_dir_make_recursive(DB_DIR,
