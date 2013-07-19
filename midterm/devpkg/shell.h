@@ -15,6 +15,7 @@ typedef struct Shell {
 	 int exit_code;
 
 	 const char *args[MAX_COMMAND_ARGS];
+	 const int var_args;
 } Shell;
 
 int Shell_run(apr_pool_t *p, Shell *cmd);
