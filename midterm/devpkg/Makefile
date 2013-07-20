@@ -1,5 +1,5 @@
 PREFIX?=/usr/local
-CFLAGS=-g -Wall -I${PREFIX}/apr/include/apr-1 -I${PREFIX}/apr/include/apr-util-1
+CFLAGS=-g -Wall -I${PREFIX}/apr/include/apr-1 -I${PREFIX}/apr/include/apr-util-1 -D_LARGEFILE64_SOURCE=1
 LDFLAGS=-L${PREFIX}/apr/lib -lapr-1 -pthread -laprutil-1
 
 all: devpkg

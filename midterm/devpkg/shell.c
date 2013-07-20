@@ -6,7 +6,7 @@ int Shell_exec(Shell template, ...)
 {
 	 apr_pool_t *p = NULL;
 	 int rc = -1;
-	 apr_status_t rv = APR_SUCESS;
+	 apr_status_t rv = APR_SUCCESS;
 	 va_list argp;
 	 const char *key = NULL;
 	 const char *arg = NULL;
@@ -14,7 +14,7 @@ int Shell_exec(Shell template, ...)
 	 int args_replaced = 0;
 
 	 rv = apr_pool_create(&p, NULL);
-	 check(rv == APR_SUCCES, "Failed to create pool.");
+	 check(rv == APR_SUCCESS, "Failed to create pool.");
 
 	 va_start(argp, template);
 
@@ -34,7 +34,7 @@ int Shell_exec(Shell template, ...)
 	 }
 
 	 check(args_replaced == template.var_args, "Did not replace the right number of arguments!");
-	 rc_Shell_run(p, *template);
+	 rc = Shell_run(p, &template);
 	 apr_pool_destroy(p);
 	 va_end(argp);
 	 return rc;
@@ -48,7 +48,7 @@ error:
 
 int Shell_run(apr_pool_t *p, Shell *cmd)
 {
-	 apr_proattr_t *attr;
+	 apr_procattr_t *attr;
 	 apr_status_t rv;
 	 apr_proc_t newproc;
 
@@ -57,7 +57,7 @@ int Shell_run(apr_pool_t *p, Shell *cmd)
 
 	 rv = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE,
 		  APR_NO_PIPE);
-	 check(rv == APR_SUCESS, "Failed to set IO of command");
+	 check(rv == APR_SUCCESS, "Failed to set IO of command");
 
 	 rv = apr_procattr_dir_set(attr, cmd->dir);
 	 check(rv == APR_SUCCESS, "Failed to set root to %s", cmd->dir);
@@ -120,13 +120,13 @@ Shell CONFIGURE_SH = {
 Shell MAKE_SH = {
 	 .exe = "make",
 	 .dir = "tmp/pkg-build",
-	 .args = {"make", "OPTS", NULL}
+	 .args = {"make", "OPTS", NULL},
 	 .var_args = 1
 };
 
 Shell INSTALL_SH = {
 	 .exe = "sudo",
 	 .dir = "/tmp/pkg-build",
-	 .args = {"sudo", "make", "TARGET", NULL}
+	 .args = {"sudo", "make", "TARGET", NULL},
 	 .var_args = 1
 };

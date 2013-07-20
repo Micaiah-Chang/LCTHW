@@ -1,4 +1,4 @@
-#include <uistd.h>
+#include <unistd.h>
 #include <apr_errno.h>
 #include <apr_file_io.h>
 
@@ -6,7 +6,7 @@
 #include "bstrlib.h"
 #include "dbg.h"
 
-static FILE *DB_open(const char *path, const char *mode);
+static FILE *DB_open(const char *path, const char *mode)
 {
 	 return fopen(path, mode);
 }
@@ -43,8 +43,8 @@ int DB_update(const char *url)
 		  log_info("Already recorded as installed: %s", url);
 	 }
 
-	 FILE *db = DB_open(DB_File, "a+");
-	 check(db. "Failed to open DB file: %s", DB_FILE);
+	 FILE *db = DB_open(DB_FILE, "a+");
+	 check(db, "Failed to open DB file: %s", DB_FILE);
 
 	 bstring line = bfromcstr(url);
 	 bconchar(line, '\n');
