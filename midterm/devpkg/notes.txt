@@ -1,0 +1,7 @@
+In shell.c, it's half hard to parse that the expected formate is template, key, arg, key, arg, etc. Maybe create a struct so that they're always in pairs?
+
+strcmp might not be whitespace safe, or it's not obviously whitespace safe.
+
+In the Shell struct initialization, the order in which .dir and .exe randomly changes, instead of being regular. (exe should probably come first because it relates directly to the name). The initial declaration of Shell should probably be changed to reflect this too
+
+In command_fetch, the check has "Don't now how to handle" instead of "Don't know how to handle"

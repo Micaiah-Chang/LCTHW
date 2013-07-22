@@ -4,4 +4,5 @@ bin/*
 *.bat
 remove*
 .#*
-
+/midterm/devpkgzed/*
+*.o
