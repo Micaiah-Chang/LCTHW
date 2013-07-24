@@ -27,7 +27,7 @@ int main(int argc, const char const *argv[])
 
 	rv = apr_getopt_init(&opt, p, argc, argv);
 
-	while(apr_getopt(opt, "I:L:c:m:i:d:SF:B", &ch, &optarg) == APR_SUCCESS) {
+	while(apr_getopt(opt, "I:Lc:m:i:d:SF:B:", &ch, &optarg) == APR_SUCCESS) {
 		switch(ch) {
 			case 'I':
 				request = COMMAND_INSTALL;

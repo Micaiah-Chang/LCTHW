@@ -85,7 +85,7 @@ Shell CLEANUP_SH = {
 	 .dir = "/tmp",
 	 .args = {"rm", "-rf", "/tmp/pkg-build", "/tmp/pkg-src.tar.gz",
 			  "/tmp/pkg-src.tar.bz2", "/tmp/DEPENDS", NULL},
-	 .var_args = 1
+	 .var_args = 0
 };
 
 Shell GIT_SH = {
@@ -119,7 +119,7 @@ Shell CONFIGURE_SH = {
 
 Shell MAKE_SH = {
 	 .exe = "make",
-	 .dir = "tmp/pkg-build",
+	 .dir = "/tmp/pkg-build",
 	 .args = {"make", "OPTS", NULL},
 	 .var_args = 1
 };

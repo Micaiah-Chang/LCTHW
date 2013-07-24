@@ -65,7 +65,19 @@ int Command_fetch(apr_pool_t *p, const char *url, int fetch_only)
 
 		  // this indicates that nothing needs to be done
 		  return 0;
+	 } else if(TAR_GZ_PAT, info.path, 0 == APR_SUCCESS) {
+		  if(info.scheme) {
+			   rc = Shell_exec(CURL_SH,
+							   "URL", url,
+							   "TARGET", TAR_GZ_SRC, NULL);
+			   check(rc == 0, "Failed to curl source: %s", url);
+		  }
 
+		  rv = apr_dir_make_recursive(BUILD_DIR,
+									  APR_UREAD | APR_UWRITE | APR_UEXECUTE, p);
+		  check(rv == APR_SUCCESS, "Failed to make directory %s", BUILD_DIR);
+
+		  rc = Shell_exec(TAR_SH, "FILE", TAR_GZ_SRC, NULL);
 	 } else if(apr_fnmatch(TAR_BZ2_PAT, info.path, 0) == APR_SUCCESS) {
 		  if(info.scheme) {
 			   rc = Shell_exec(CURL_SH, "URL", url, "TARGET", TAR_BZ2_SRC, NULL);
@@ -98,6 +110,7 @@ int Command_build(apr_pool_t *p, const char *url, const char *configure_opts,
 
 	 // actually do an install
 	 if(access(CONFIG_SCRIPT, X_OK) == 0) {
+		 log_info("Configure opt is: %s", configure_opts);
 		  log_info("Has a configure script, running it.");
 		  rc = Shell_exec(CONFIGURE_SH, "OPTS", configure_opts, NULL);
 		  check(rc == 0, "Failed to configure.");
