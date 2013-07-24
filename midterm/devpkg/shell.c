@@ -24,7 +24,7 @@ int Shell_exec(Shell template, ...)
 	 {
 		  arg = va_arg(argp, const char *);
 
-		  for(i = 0; template. args[i] != NULL; i++) {
+		  for(i = 0; template.args[i] != NULL; i++) {
 			   if(strcmp(template.args[i], key) == 0) {
 					template.args[i] = arg;
 					args_replaced++;

@@ -1,0 +1,32 @@
+NAME
+		devpkg - package handling utility created for learn c the hard way
+
+SYNOPSIS
+		devpkg [-i= install options ] [-m= make options ]
+		[-c = configure options ] [options] [URL] 
+
+DESCRIPTION
+		devpkg is a simple command-line tool created to handle simple package
+		installs, it assumes that all packages can be installed with a simple
+		./configure, make, make install series of steps. It is dependent
+		upon git, make, tar and curl to work. Reads from a DEPENDS
+		binary file provided by maintainer of package to build dependencies. Intelligently performs based on the form of the URL. 
+
+OPTIONS
+
+		-S
+			Initializes devpkg. Use before anything else
+
+		-I
+			Install package from source, using the configure or make options
+			as additional parameters. Equivalent to fetching and then building.
+
+		-L
+			List all currently installed packages and their urls
+
+		-F
+			Fetch source code, used for manual builds
+
+		-B
+			Build source code without considering if it's been installed
+
