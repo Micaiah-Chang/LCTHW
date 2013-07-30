@@ -1,6 +1,6 @@
 In db.c, it would be more clear if the checks were done with != NULL instead of just the name of the variable in order to be more clear (function db_load).
 
-In shell.c, it's half hard to parse that the expected formate is template, key, arg, key, arg, etc. Maybe create a struct so that they're always in pairs?
+In shell.c, it's half hard to parse that the expected format is template, key, arg, key, arg, etc. Maybe create a struct so that they're always in pairs?
 
 strcmp might not be whitespace safe, or it's not obviously whitespace safe.
 
@@ -9,3 +9,5 @@ In the Shell struct initialization, the order in which .dir and .exe randomly ch
 In command_fetch, the check has "Don't now how to handle" instead of "Don't know how to handle"
 
 The execution order of command_install, with calls to fetch, depends and build are unclear
+
+Got 99% on the midterm! (Had an extra period in one of the error messages) Had more errors than that, but they all have to do with trailing whitespace or slightly different indentation schemes.
