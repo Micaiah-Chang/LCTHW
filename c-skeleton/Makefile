@@ -11,7 +11,6 @@ TESTS=$(patsubst %.c,%,$(TEST_SRC))
 TARGET=build/libYOUR_LIBRARY.a
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
-# The Target Build
 all : $(TARGET) $(SO_TARGET) tests
 
 dev: CFLAGS=-g -Wall -Isrc -Wall -Wextra $(OPTFLAGS)
