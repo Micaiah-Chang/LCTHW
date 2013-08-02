@@ -6,3 +6,6 @@ remove*
 .#*
 /midterm/devpkgzed/*
 *.o
+/ex29-project/build/libex29.a
+/ex29-project/build/libex29.so
+/ex29-project/tests/ex29_tests
