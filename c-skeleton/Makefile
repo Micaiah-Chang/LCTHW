@@ -1,5 +1,6 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
-LIBS=-ldl $(OPTLIBS)
+LIBS=-lex29 $(OPTLIBS)
+LDLIBS=-ldl
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
@@ -8,7 +9,7 @@ OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 TEST_SRC=$(wildcard tests/*_tests.c)
 TESTS=$(patsubst %.c,%,$(TEST_SRC))
 
-TARGET=build/libYOUR_LIBRARY.a
+TARGET=build/libex29.a
 SO_TARGET=$(patsubst %.a,%.so,$(TARGET))
 
 all : $(TARGET) $(SO_TARGET) tests
@@ -31,7 +32,7 @@ build:
 # The Unit Tests
 .PHONY: tests
 tests: CFLAGS += $(TARGET)
-tests: $(TESTS)
+tests: $(TESTS) 
 	sh ./tests/runtests.sh
 
 valgrind:
