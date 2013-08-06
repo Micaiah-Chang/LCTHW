@@ -1,5 +1,7 @@
 #include <lcthw/list.h>
 #include <lcthw/dbg.h>
+#include <assert.h>
+
 
 List *List_create()
 {
@@ -8,6 +10,7 @@ List *List_create()
 
 void List_destroy(List *list)
 {
+	 assert(list != NULL && "list is NULL!");
 	 LIST_FOREACH(list, first, next, cur) {
 		  if(cur->prev) {
 			   free(cur->prev);
@@ -20,6 +23,7 @@ void List_destroy(List *list)
 
 void List_clear(List *list)
 {
+	 assert(list != NULL && "list is NULL!");
 	 LIST_FOREACH(list, first, next, cur) {
 		  free(cur->value);
 	 }
@@ -28,12 +32,24 @@ void List_clear(List *list)
 
 void List_clear_destroy(List *list)
 {
-	 List_clear(list);
-	 List_destroy(list);
+	 assert(list != NULL && "list is NULL!");
+
+	 LIST_FOREACH(list, first, next, cur) {
+		  free(cur->value);
+
+		  if(cur->prev) {
+			   free(cur->prev);
+		  }		  
+	 }
+
+	 free(list->last);
+	 free(list);
 }
 
 void List_push(List *list, void *value)
 {
+	 assert(list != NULL && "list is NULL!");
+
 	 ListNode *node = calloc(1, sizeof(ListNode));
 	 check_mem(node);
 
@@ -49,6 +65,9 @@ void List_push(List *list, void *value)
 	 }
 
 	 list->count++;
+	 assert(list->count >= 0 && "List cannot be negative length!");
+
+	 // fallthrough
 
 error:
 	 return;
@@ -56,17 +75,21 @@ error:
 
 void *List_pop(List *list)
 {
+	 assert(list != NULL && "list is NULL!");
+
 	 ListNode *node = list->last;
 	 return node != NULL ? List_remove(list, node) : NULL;
 }
 
 void List_unshift(List *list, void *value)
 {
+	 assert(list != NULL && "list is NULL!");
+
 	 ListNode *node = calloc(1, sizeof(ListNode));
 	 check_mem(node);
 
 	 node->value = value;
-	 
+
 	 if(list->first == NULL) {
 		  list->first = node;
 		  list->last = node;
@@ -78,18 +101,26 @@ void List_unshift(List *list, void *value)
 
 	 list->count++;
 
+
 error:
+	 assert(list->count >= 0 && "List cannot be negative length!");
+
+	 
 	 return;
 }
 
 void *List_shift(List *list)
 {
+	 assert(list != NULL && "list is NULL!");
+
 	 ListNode *node = list->first;
 	 return node != NULL ? List_remove(list, node) : NULL;
 }
 
 void *List_remove(List *list, ListNode *node)
 {
+	 assert(list != NULL && "list is NULL!");
+
 	 void *result = NULL;
 
 	 check(list->first && list->last, "List is empty");
@@ -109,7 +140,7 @@ void *List_remove(List *list, ListNode *node)
 	 } else {
 		  ListNode *after = node->next;
 		  ListNode *before = node->prev;
-		  after->prev = before;		  
+		  after->prev = before;
 		  before->next = after;
 	 }
 
@@ -117,6 +148,11 @@ void *List_remove(List *list, ListNode *node)
 	 result = node->value;
 	 free(node);
 
+	 // fallthrough
+
 error:
+	 assert(list->count >= 0 && "List cannot be negative length!");
+	 assert(list->count > 0 ? list->first != NULL : 1 && "Cannot have nonzero length list with NULL first pointer");
+
 	 return result;
 }
