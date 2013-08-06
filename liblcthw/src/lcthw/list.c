@@ -10,7 +10,7 @@ List *List_create()
 
 void List_destroy(List *list)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "Cannot destroy a NULL list.");
 	 LIST_FOREACH(list, first, next, cur) {
 		  if(cur->prev) {
 			   free(cur->prev);
@@ -23,7 +23,7 @@ void List_destroy(List *list)
 
 void List_clear(List *list)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "Cannot clear a NULL object.");
 	 LIST_FOREACH(list, first, next, cur) {
 		  free(cur->value);
 	 }
@@ -32,7 +32,8 @@ void List_clear(List *list)
 
 void List_clear_destroy(List *list)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL &&
+			"Cannot clear and destroy object if it is NULL");
 
 	 LIST_FOREACH(list, first, next, cur) {
 		  free(cur->value);
@@ -48,7 +49,8 @@ void List_clear_destroy(List *list)
 
 void List_push(List *list, void *value)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "list is NULL! Cannot push.");
+	 assert(value != NULL && "Value at node cannot be NULL!");
 
 	 ListNode *node = calloc(1, sizeof(ListNode));
 	 check_mem(node);
@@ -65,17 +67,18 @@ void List_push(List *list, void *value)
 	 }
 
 	 list->count++;
-	 assert(list->count >= 0 && "List cannot be negative length!");
-
+	 
 	 // fallthrough
 
 error:
+	 assert(list->count >= 0 && "List cannot be negative length!");
+	 assert(list->count > 0 ? list->first != NULL : 1 && "Cannot have nonzero length list with NULL first pointer");
 	 return;
 }
 
 void *List_pop(List *list)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "list is NULL! Cannot pop.");
 
 	 ListNode *node = list->last;
 	 return node != NULL ? List_remove(list, node) : NULL;
@@ -83,7 +86,8 @@ void *List_pop(List *list)
 
 void List_unshift(List *list, void *value)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "list is NULL! Cannot unshift");
+	 assert(value != NULL && "Value at node cannot be NULL!");
 
 	 ListNode *node = calloc(1, sizeof(ListNode));
 	 check_mem(node);
@@ -104,14 +108,14 @@ void List_unshift(List *list, void *value)
 
 error:
 	 assert(list->count >= 0 && "List cannot be negative length!");
-
+	 assert(list->count > 0 ? list->first != NULL : 1 && "Cannot have nonzero length list with NULL first pointer");
 	 
 	 return;
 }
 
 void *List_shift(List *list)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "list is NULL! Cannot shift");
 
 	 ListNode *node = list->first;
 	 return node != NULL ? List_remove(list, node) : NULL;
@@ -119,7 +123,8 @@ void *List_shift(List *list)
 
 void *List_remove(List *list, ListNode *node)
 {
-	 assert(list != NULL && "list is NULL!");
+	 assert(list != NULL && "list is NULL! Cannot remove!");
+	 assert(node != NULL && "Must have a node to remove that is not NULL.");
 
 	 void *result = NULL;
 
@@ -142,9 +147,14 @@ void *List_remove(List *list, ListNode *node)
 		  ListNode *before = node->prev;
 		  after->prev = before;
 		  before->next = after;
+		  // Note this last case assumes that the node is
+		  // 1) In the Center of the list
+		  // 2) That it doesn't also have NULL next or prev
+		  // pointers
 	 }
 
 	 list->count--;
+	 
 	 result = node->value;
 	 free(node);
 
