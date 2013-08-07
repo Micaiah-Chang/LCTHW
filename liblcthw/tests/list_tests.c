@@ -86,9 +86,51 @@ char *test_shift()
 	 mu_assert(val == test3, "Wrong value on shift.");
 
 	 val = List_shift(list);
+	 mu_assert(val == test2, "Wrong value on shift.");
+
+	 val = List_shift(list);
 	 mu_assert(val == test1, "Wrong value on shift.");
 	 mu_assert(List_count(list) == 0, "Wrong count after shift.");
 
+	 return NULL;
+}
+
+char *test_add_after()
+{
+	 mu_assert(List_count(list) != 0, "Wrong count before adding after.");;
+
+	 List_add_after(list, list->first, test2);
+	 mu_assert(List_last(list) == test1, "Wrong last value on add.");
+	 mu_assert(List_first(list) == test3, "Wrong first on add");
+
+	 /* log_info("First node is: %s", List_first(list)); */
+	 /* log_info("Second node is: %s", list->first->next->value); */
+	 /* log_info("Third node is: %s", list->first->next->next->value); */
+	 /* log_info("Last node is: %s", List_last(list)); */
+	 mu_assert(list->first->next->value == test2, "Wrong mid on add");
+
+	 mu_assert(List_count(list) == 3, "Wrong count after add after func");
+
+	 return NULL;
+}
+
+char *test_swap()
+{ 
+	 List_swap(list->first->next, list->last);
+
+	 mu_assert(List_count(list) == 3, "Wrong count after swap");
+
+	 mu_assert(List_first(list) == test3, "Wrong first value after swap");
+
+	 mu_assert(List_last(list) == test2, "Wrong last value after swap");
+	 mu_assert(list->first->next->value == test1, "Wrong mid value after swap");
+
+	 List_swap(list->first->next, list->last);
+	 mu_assert(List_count(list) == 3, "Wrong count after swap");
+
+	 mu_assert(List_first(list) == test3, "Wrong first value after swap");
+	 mu_assert(List_last(list) == test1, "Wrong last value after swap");
+	 mu_assert(list->first->next->value == test2, "Wrong mid value after swap");
 	 return NULL;
 }
 
@@ -100,6 +142,8 @@ char *all_tests()
 	 mu_run_test(test_push_pop);
 	 mu_run_test(test_unshift);
 	 mu_run_test(test_remove);
+	 mu_run_test(test_add_after);
+	 mu_run_test(test_swap);
 	 mu_run_test(test_shift);
 	 mu_run_test(test_destroy);
 
