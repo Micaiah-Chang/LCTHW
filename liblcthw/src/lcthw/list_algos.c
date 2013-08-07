@@ -27,80 +27,63 @@ error:
 	 return -1;
 }
 
+
+List *merge(List *left, List *right, List_compare cmp)
+{
+	 List *result = List_create();
+
+	 while (List_count(left) > 0 || List_count(right) > 0) {
+		  if(List_count(left) > 0 && List_count(right) > 0) {
+			   if(cmp(List_first(left), List_first(right)) <= 0 ) {
+					List_push(result, List_shift(left));
+			   } else {
+					List_push(result, List_shift(right));
+			   }
+			   
+		  } else if(left->count > 0) {
+			   List_push(result, List_shift(left));
+		  } else if(right->count > 0) {
+			   List_push(result, List_shift(right));
+		  }
+	 }
+
+	 check(result->first != NULL && result->last != NULL,
+		   "Cannot have empty result!");
+	 return result;
+error:
+	 return NULL;
+}
+
 List *List_merge_sort(List *list, List_compare cmp)
 {
 	 if(list->count <= 1) {
 		  return list;
-	 } else if(list->count > 1) {
-		  List *left = List_create();
-		  List *right = List_create();
-		  int split = list->count / 2;
-		  int i = 0;
-		  ListNode *current = NULL;
-		  for(i = 0, current = list->first;
-			  i < list->count;
-			  i++, current = current->next) {
-			   if(i < split) List_push(left, current->value);
-			   if(i >= split) List_push(right, current->value);
+	 } 
+	 List *left = List_create();
+	 List *right = List_create();
+	 int split = List_count(list) / 2;
+	 
+	 ListNode *current = NULL;
+	 LIST_FOREACH(list, first, next, cur) {
+		  if(split > 0) {
+			   List_push(left, cur->value);
+		  } else {
+			   List_push(right, cur->value);
 		  }
-
-		  left = List_merge_sort(left, cmp);
-		  right = List_merge_sort(right, cmp);
-
-		  List *result = List_create();
-
-		  while (left->count > 0 && right->count > 0) {
-			   if(left->count > 0 && right->count > 0) {
-					if(cmp(List_first(left), List_first(right)) <= 0 ) {
-						 List_push(result, List_shift(left));
-					} else {
-						 List_push(result, List_shift(right));
-					}
-			   } else if(left->count > 0) {
-					List_push(result, List_shift(left));
-			   } else if(right->count > 0) {
-					List_push(result, List_shift(right));
-			   }
-		  }
-
-		  check(result->first != NULL && result->last != NULL,
-				"Cannot have empty result!");
-		  return result;
+		  
+		  split--;
 	 }
+
+	 List *sort_left = List_merge_sort(left, cmp);
+	 List *sort_right = List_merge_sort(right, cmp);
+
+	 if(sort_left != left) List_destroy(left);
+	 if(sort_right != right) List_destroy(right);
+	 
+	 return merge(sort_left, sort_right, cmp);
+
 	 
 error:
 	 return NULL;
 }
 
-//List *merge(List *left, List *right)
-//{
-/* function merge(left, right) */
-/*     // receive the left and right sublist as arguments. */
-/*     // 'result' variable for the merged result of two sublists. */
-/*     var list result */
-/*     // assign the element of the sublists to 'result' variable until there is no element to merge.  */
-/*     while length(left) > 0 or length(right) > 0 */
-/*         if length(left) > 0 and length(right) > 0 */
-/*            // compare the first two element, which is the small one, of each two sublists. */
-/*             if first(left) <= first(right) */
-/*                 // the small element is copied to 'result' variable. */
-/*                 // delete the copied one(a first element) in the sublist. */
-/*                 append first(left) to result */
-/*                 left = rest(left) */
-/*             else */
-/*                 // same operation as the above(in the right sublist). */
-/*                 append first(right) to result */
-/*                 right = rest(right) */
-/*         else if length(left) > 0 */
-/*             // copy all of remaining elements from the sublist to 'result' variable, when there is no more element to compare with. */
-/*             append first(left) to result */
-/*             left = rest(left) */
-/*         else if length(right) > 0 */
-/*             // same operation as the above(in the right sublist). */
-/*             append first(right) to result */
-/*             right = rest(right) */
-/*     end while */
-/*     // return the result of the merged sublists(or completed one, finally). */
-/*     // the length of the left and right sublists will grow bigger and bigger, after the next call of this function. */
-	 /*     return result */
-// }
