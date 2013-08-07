@@ -43,19 +43,31 @@ List *List_merge_sort(List *list, List_compare cmp)
 			   if(i < split) List_push(left, current->value);
 			   if(i >= split) List_push(right, current->value);
 		  }
-		  // left = merge_sort(left);
-		  //right = merge_sort(right);
+
+		  left = List_merge_sort(left, cmp);
+		  right = List_merge_sort(right, cmp);
+
+		  List *result = List_create();
+
+		  while (left->count > 0 && right->count > 0) {
+			   if(left->count > 0 && right->count > 0) {
+					if(cmp(List_first(left), List_first(right)) <= 0 ) {
+						 List_push(result, List_shift(left));
+					} else {
+						 List_push(result, List_shift(right));
+					}
+			   } else if(left->count > 0) {
+					List_push(result, List_shift(left));
+			   } else if(right->count > 0) {
+					List_push(result, List_shift(right));
+			   }
+		  }
+
+		  check(result->first != NULL && result->last != NULL,
+				"Cannot have empty result!");
+		  return result;
 	 }
-
-
 	 
-	 List *ans = List_create();
-	 List_unshift(ans, "xjvef");
-	 List_unshift(ans, "abcd");	 
-	 List_unshift(ans, "XXXX");
-	 List_unshift(ans, "NDSS");
-	 List_unshift(ans, "1234");
-	 return ans;
 error:
 	 return NULL;
 }
