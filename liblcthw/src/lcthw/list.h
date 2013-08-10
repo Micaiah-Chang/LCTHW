@@ -74,6 +74,7 @@ void *List_remove(List *list, ListNode *node);
 
 void List_swap(ListNode *node1, ListNode *node2);
 
+
 void List_add_after(List *list, ListNode *refnode, void *value);
 
 // From list Element L, start at the node at L->S (Can be
@@ -88,5 +89,6 @@ void List_add_after(List *list, ListNode *refnode, void *value);
 #define LIST_FOREACH(L, S, M, V) ListNode *_node = NULL; \
 	 ListNode *V = NULL; \
 	 for (V = _node = L->S; _node != NULL; V = _node = _node->M)
+
 
 #endif

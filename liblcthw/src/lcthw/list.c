@@ -173,12 +173,11 @@ void List_swap(ListNode *node1, ListNode *node2)
 	 assert(node2 != NULL && "Cannot have NULL nodes");
 
 	 void *tmp = node1->value;
-
 	 
 	 node1->value = node2->value;
 	 node2->value = tmp;
 
-error:
+
 	 return;
 }
 
@@ -200,6 +199,38 @@ void List_add_after(List *list, ListNode *refnode, void *value)
 		  
 		  node->next = after;
 		  node->prev = refnode;
+		  
+		  list->count++;
+	 }
+
+error:
+	 assert(list->count >= 0 && "List cannot be negative length!");
+	 assert(list->count > 0 ? list->first != NULL : 1 && "Cannot have nonzero length list with NULL first pointer");
+	 
+	 return;
+	 
+}
+
+
+
+void List_add_before(List *list, ListNode *refnode, void *value)
+{
+	 assert(refnode != NULL && "Reference node is NULL!");
+
+	 if(refnode == list->first) {
+		  List_unshift(list, value);
+	 } else {
+		  ListNode *node = calloc(1, sizeof(ListNode));
+		  check_mem(node);
+		  
+		  node->value = value;
+		  
+		  ListNode *before = refnode->prev;
+		  before->next = node;
+		  refnode->prev = node;
+		  
+		  node->next = refnode;
+		  node->prev = before;
 		  
 		  list->count++;
 	 }
