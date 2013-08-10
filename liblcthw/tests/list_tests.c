@@ -134,11 +134,30 @@ char *test_swap()
 	 return NULL;
 }
 
+void *test_join()
+{
+	 List *list1 = List_create();
+	 List_push(list1, test1);
+	 List_push(list1, test2);
+
+	 List *list2 = List_create();
+	 List_push(list2, test3);
+
+	 List_join(list1, list2);
+	 mu_assert(List_first(list1) == test1, "Wrong first value");
+	 mu_assert(List_last(list1) == test3, "Wrong last value");
+	 
+	 mu_assert(list1->count == 3, "List 1 has wrong count.");
+
+	 return NULL;
+}
+
 char *all_tests()
 {
 	 mu_suite_start();
 
 	 mu_run_test(test_create);
+
 	 mu_run_test(test_push_pop);
 	 mu_run_test(test_unshift);
 	 mu_run_test(test_remove);
@@ -146,6 +165,7 @@ char *all_tests()
 	 mu_run_test(test_swap);
 	 mu_run_test(test_shift);
 	 mu_run_test(test_destroy);
+	 mu_run_test(test_join);
 
 	 return NULL;
 }

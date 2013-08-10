@@ -212,7 +212,6 @@ error:
 }
 
 
-
 void List_add_before(List *list, ListNode *refnode, void *value)
 {
 	 assert(refnode != NULL && "Reference node is NULL!");
@@ -240,5 +239,16 @@ error:
 	 assert(list->count > 0 ? list->first != NULL : 1 && "Cannot have nonzero length list with NULL first pointer");
 	 
 	 return;
+	 
+}
+
+void List_join(List *list1, List *list2)
+{
+	 LIST_FOREACH(list2, first, next, cur) {
+		  void *value = List_shift(list2);
+		  List_push(list1, value);
+	 }
+
+	 List_clear_destroy(list2);
 	 
 }

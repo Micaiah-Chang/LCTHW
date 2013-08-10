@@ -72,10 +72,14 @@ void *List_shift(List *list);
 // Used as a helper function in push, pop, shift and unshift
 void *List_remove(List *list, ListNode *node);
 
+// Swaps the values of the two nodes
 void List_swap(ListNode *node1, ListNode *node2);
 
-
+// Inserts value at a specified node in that location
 void List_add_after(List *list, ListNode *refnode, void *value);
+void List_add_before(List *list, ListNode *refnode, void *value);
+
+void List_join(List *list1, List *list2);
 
 // From list Element L, start at the node at L->S (Can be
 // list->first or node->next for example)
