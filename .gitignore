@@ -1,3 +1,4 @@
+
 c:
 bin/*
 \#*\#
@@ -11,3 +12,6 @@ remove*
 /ex29-project/tests/ex29_tests
 core.*
 *.log
+*.a
+*.so
+*_tests
