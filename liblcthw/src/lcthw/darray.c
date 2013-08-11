@@ -38,6 +38,7 @@ void DArray_clear(DArray *array)
 			   }
 		  }
 	 }
+	 // All elements of array must be freed by the end
 }
 
 static inline int DArray_resize(DArray *array, size_t newsize)
@@ -76,7 +77,11 @@ int DArray_contract(DArray *array)
 {
 	 int new_size = array->end < (int)array->expand_rate ? (int)array->expand_rate : array->end;
 
+	 check(new_size > 0, "Array size cannot be zero");
+
 	 return DArray_resize(array, new_size + 1);
+error:
+	 return -1;
 }
 
 
@@ -99,12 +104,15 @@ int DArray_push(DArray *array, void *el)
 	 assert(array != NULL && "Input array should not be NULL.");
 	 array->contents[array->end] = el;
 	 array->end++;
+	 check(array->end > 0, "Array should have a size greater than zero.");
 
 	 if(DArray_end(array) >= DArray_max(array)) {
 		  return DArray_expand(array);
 	 } else {
 		  return 0;
 	 }
+error:
+	 return -1;
 }
 
 void *DArray_pop(DArray *array)
@@ -114,6 +122,8 @@ void *DArray_pop(DArray *array)
 
 	 void *el = DArray_remove(array, array->end - 1);
 	 array->end--;
+	 
+	 check(array->end >= 0, "Array should be non negative.");	 
 
 	 if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % array->expand_rate) {
 		  DArray_contract(array);
