@@ -1,6 +1,7 @@
 #include "minunit.h"
 #include <lcthw/darray.h>
 
+
 static DArray *array = NULL;
 static int *val1 = NULL;
 static int *val2 = NULL;
@@ -51,6 +52,24 @@ char *test_get()
 	 return NULL;
 }
 
+char *test_remove()
+{
+	 int *val_check = DArray_remove(array, 0);
+	 mu_assert(val_check != NULL, "Should not get NULL.");
+	 mu_assert(*val_check == *val1, "Should get the first value.");
+	 mu_assert(DArray_get(array, 0) ==  NULL, "Should be gone.");
+	 DArray_free(val_check);
+
+	 val_check = DArray_remove(array, 1);
+	 mu_assert(val_check != NULL, "Should not get NULL.");
+	 mu_assert(*val_check == *val2, "Should get the first value.");
+	 mu_assert(DArray_get(array, 1) == NULL, "Should be gone.");
+	 DArray_free(val_check);
+
+	 return NULL;
+	 
+}
+
 char *test_expand_contract()
 {
 	 int old_max = array->max;
@@ -76,12 +95,12 @@ char *test_push_pop()
 		  DArray_push(array, val);
 	 }
 
-	 mu_assert(assert->max == 1201, "Wrong max size.");
+	 mu_assert(array->max == 1201, "Wrong max size.");
 
 	 for (i = 999; i >= 0; i--) {
 		  int *val = DArray_pop(array);
 		  mu_assert(val != NULL, "Shouldn't get a NULL.");
-		  mu_assert(val == i * 333, "Wrong value.");
+		  mu_assert(*val == i * 333, "Wrong value.");
 		  DArray_free(val);
 	 }
 

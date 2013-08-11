@@ -13,7 +13,7 @@ typedef struct DArray {
 	 void **contents;
 } DArray;
 
-Darray *DArray_create(size_t element_size, size_t initial_max);
+DArray *DArray_create(size_t element_size, size_t initial_max);
 
 void DArray_destroy(DArray *array);
 
@@ -58,7 +58,7 @@ error:
 	 return NULL;
 }
 
-static inline void *DArray_remove(Darray *array, int i)
+static inline void *DArray_remove(DArray *array, int i)
 {
 	 void *el = array->contents[i];
 
