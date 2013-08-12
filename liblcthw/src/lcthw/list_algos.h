@@ -9,6 +9,8 @@ typedef int (*List_compare)(const void *a, const void *b);
 
 int List_bubble_sort(List *list, List_compare cmp);
 List *List_merge_sort(List *list, List_compare cmp);
+//List *List_bot_merge_sort(List *list, List_compare cmp);
+
 
 // Takes a list and inserts something at a given value using List_compare
 int List_insert_sorted(List *list, void *value, List_compare cmp);

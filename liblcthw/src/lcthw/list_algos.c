@@ -2,7 +2,7 @@
 #include <lcthw/list_algos.h>
 #include <lcthw/dbg.h>
 
-int List_insert_sorted(List *list, void *value, List_compare cmp)
+int List_insert_sorted(List *list, void *value, List_compare  cmp)
 {
 	 assert(list != NULL && "List cannot be NULL");
 	 
@@ -27,7 +27,7 @@ int List_insert_sorted(List *list, void *value, List_compare cmp)
 	 return 0;
 }
 
-int List_bubble_sort(List *list, List_compare cmp)
+int List_bubble_sort(List *list, List_compare cmp) 
 {
 	 assert(list != NULL && "List cannot be NULL.");
 	 
@@ -58,7 +58,7 @@ error:
 
 
 List *merge(List *left, List *right, List_compare cmp)
-{
+{ 
 	 assert(left != NULL && right != NULL && "Cannot have NULL left or right!");
 	 List *result = List_create();
 	 ListNode *value = NULL;
@@ -136,4 +136,3 @@ List *List_merge_sort(List *list, List_compare cmp)
 error:
 	 return NULL;
 }
-

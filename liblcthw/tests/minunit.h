@@ -14,7 +14,7 @@
 
 #define RUN_TESTS(name) int main(int argc, char *argv[]) {\
 	 argc = argc; \
-	 debug("----- RUNNING: %s", argv[0]);\
+	 debug("\n----- RUNNING: %s", argv[0]);\
 	 printf("----\nRUNNING: %s\n", argv[0]);\
 	 char *result = name();\
 	 if(result != 0) {\

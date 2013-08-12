@@ -1,6 +1,6 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
 LIBS=-llcthw $(OPTLIBS)
-LDLIBS=-ldl
+LDLIBS=-ldl -lrt
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
