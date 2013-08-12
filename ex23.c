@@ -131,48 +131,58 @@ int main(int argc, char *argv[])
 	 char from[10000] = {'a'};
 	 char to[10000] = {'c'};
 	 int rc = 0;
+	 int i = 0;
+	 long long N = 900;
 	 struct timespec before;
 
 	 // setup the from to have some stuff
 	 memset(from, 'x', 10000);
 	 // set it to a failure mode
-	 memset(to, 'y', 10000);
-	 check(valid_copy(to, 10000, 'y'), "Not initialized right.");
-
 	 clock_gettime(CLOCK_REALTIME, &before);
-	 
-	 // use normal copy to
-	 rc = normal_copy(from, to, 10000);
-	 check(rc == 10000, "Normal copy failed: %d", rc);
-	 check(valid_copy(to, 10000, 'x'), "Normal copy failed.");
+	 for(i = 0; i < N; i++) {
+		  
+		  memset(to, 'y', 10000);
+		  check(valid_copy(to, 10000, 'y'), "Not initialized right.");
 
+	 
+		  // use normal copy to
+		  rc = normal_copy(from, to, 10000);
+		  check(rc == 10000, "Normal copy failed: %d", rc);
+		  check(valid_copy(to, 10000, 'x'), "Normal copy failed.");
+	 }
+	 
 	 struct timespec after;
 	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("Normal copy: %ld", (after.tv_nsec-before.tv_nsec));
+	 log_info("Normal copy: %lld", (after.tv_nsec - before.tv_nsec) / N);
 	 
-	 //reset
-	 memset(to, 'y', 10000);
-
-
 	 clock_gettime(CLOCK_REALTIME, &before);
-     // duffs version
-	 rc = duffs_device(from, to, 10000);
-	 check(rc == 10000, "Duff's device failed: %d", rc);
-	 check(valid_copy(to, 10000, 'x'), "Duff's device failed copy.");
 
+	 for(i = 0; i < N; i++) {
+		  memset(to, 'y', 10000);
+
+
+		  // duffs version
+		  rc = duffs_device(from, to, 10000);
+		  check(rc == 10000, "Duff's device failed: %d", rc);
+		  check(valid_copy(to, 10000, 'x'), "Duff's device failed copy.");
+	 }
+	 
 	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("Duff's Device: %ld", (after.tv_nsec-before.tv_nsec));
+	 log_info("Duff's Device: %lld", (after.tv_nsec - before.tv_nsec) / N);
 
-	 memset(to, 'y', 10000);
+
 	 
 	 clock_gettime(CLOCK_REALTIME, &before);
 	 // reset
-	 rc = zeds_device(from, to, 10000);
-	 check(rc == 10000, "Zed's device failed: %d", rc);
-	 check(valid_copy(to, 10000, 'x'), "Zed's device failed copy.");
+	 for(i = 0; i < N; i++) {
+		  memset(to, 'y', 10000);
+		  rc = zeds_device(from, to, 10000);
+		  check(rc == 10000, "Zed's device failed: %d", rc);
+		  check(valid_copy(to, 10000, 'x'), "Zed's device failed copy.");
+	 }
 
 	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("Zeds Device: %ld", (after.tv_nsec-before.tv_nsec));
+	 log_info("Zeds Device: %lld", (after.tv_nsec - before.tv_nsec) / N);
 
 
 	 /* memset(to, 'y', 10000); */
@@ -184,39 +194,38 @@ int main(int argc, char *argv[])
 	 /* check(valid_copy(to, 10000, 'x'), "Micaiah's device failed copy."); */
 
 	 /* clock_gettime(CLOCK_REALTIME, &after); */
-	 /* log_info("Micaiahs_device: %ld", (after.tv_nsec-before.tv_nsec)); */
+	 /* log_info("Micaiahs_device: %lld", (after.tv_nsec - before.tv_nsec)); */
 
-	 memset(to, 'y', 10000);
 
-	 clock_gettime(CLOCK_REALTIME, &before);
-	 
-	 memcpy(to, from, 10000);
-	 // check(rc == 10000, "memcpy failed %d", rc);
-	 check(valid_copy(to, 10000, 'x'), "memcpy failed copy.");
-
-	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("memcpy: %ld", (after.tv_nsec-before.tv_nsec));
-
-	 memset(to, 'y', 10000);
 
 	 clock_gettime(CLOCK_REALTIME, &before);
-	 
-	 memmove(to, from, 10000);
-	 // check(rc == 10000, "memcpy failed %d", rc);
-	 check(valid_copy(to, 10000, 'x'), "memmove failed copy.");
-
+	 for(i = 0; i < N; i++) {
+		  memset(to, 'y', 10000);
+		  memcpy(to, from, 10000);
+		  check(valid_copy(to, 10000, 'x'), "memcpy failed copy.");
+	 }
 	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("memmove: %ld", (after.tv_nsec-before.tv_nsec));
+	 log_info("memcpy: %lld", (after.tv_nsec - before.tv_nsec) / N);
 
-	 memset(to, 'y', 10000);
 
 	 clock_gettime(CLOCK_REALTIME, &before);
-	 
-	 memset(to, 'x', 10000);
-	 check(valid_copy(to, 10000, 'x'), "memset failed copy.");
+
+	 for(i = 0; i < N; i++) {
+		  memset(to, 'y', 10000);
+		  memmove(to, from, 10000);
+		  check(valid_copy(to, 10000, 'x'), "memmove failed copy.");
+	 }
 
 	 clock_gettime(CLOCK_REALTIME, &after);
-	 log_info("memset: %ld", (after.tv_nsec-before.tv_nsec));
+	 log_info("memmove: %lld", (after.tv_nsec - before.tv_nsec) / N);
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 for(i = 0; i < N; i++) {
+		  memset(to, 'y', 10000);
+		  memset(to, 'x', 10000);
+		  check(valid_copy(to, 10000, 'x'), "memset failed copy.");
+	 }
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 log_info("memset: %lld", (after.tv_nsec - before.tv_nsec) / N);
 	 
 	 return 0;
 error:
