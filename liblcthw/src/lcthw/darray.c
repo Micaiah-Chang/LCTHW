@@ -73,6 +73,24 @@ error:
 	 return -1;
 }
 
+int DArray_mul_expand(DArray *array)
+{
+	 assert(array != NULL && "Input array should not be NULL.");
+	 size_t old_max = array->max;
+	 size_t old_expand = array->expand_rate;
+	 array->expand_rate = 2;
+	 check(DArray_resize(array, array->max * array->expand_rate) == 0,
+		   "Failed to expand array to new size: %d",
+		  array->max * array->expand_rate);
+
+	 memset(array->contents + old_max, 0, old_max + 1);
+
+	 array->expand_rate = old_expand;
+	 return 0;
+error:
+	 return -1;
+}
+
 int DArray_contract(DArray *array)
 {
 	 int new_size = array->end < (int)array->expand_rate ? (int)array->expand_rate : array->end;
