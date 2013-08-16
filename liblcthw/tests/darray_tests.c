@@ -140,25 +140,24 @@ char *test_expand_time()
 		while (array->max < size) {
 			DArray_expand(array);
 		}
-		if(i == 1) 	printf("It is currently at size: %d\n", array->max);
+
 		DArray_contract(array);
 	}
     clock_gettime(CLOCK_REALTIME, &after);
+	log_info("Addition expand took: %ld.%09ld on average.\n", (after.tv_sec - before.tv_sec) / N, (after.tv_nsec - before.tv_nsec) / N);
 
-	printf("Addition expand took: %ld.%09ld on average.\n",(after.tv_sec - before.tv_sec) / N , (after.tv_nsec - before.tv_nsec) / N);
-	printf("It is currently at size: %d\n", array->max);
 	
 	clock_gettime(CLOCK_REALTIME, &before);
 	for(i = 0; i < N; i++) {
 		while(array->max < size) {
 			DArray_mul_expand(array);
 		}
-		if(i == 1) 	printf("It is currently at size: %d\n", array->max);
+
 		DArray_contract(array);
 	}
 	clock_gettime(CLOCK_REALTIME, &after);
 
-	printf("Multiply expand took: %ld.%09ld on average.\n", (after.tv_sec - before.tv_sec) / N, (after.tv_nsec - before.tv_nsec) / N);
+	log_info("Multiply expand took: %ld.%09ld on average.\n", (after.tv_sec - before.tv_sec) / N, (after.tv_nsec - before.tv_nsec) / N);
 	
     return NULL;
 }
