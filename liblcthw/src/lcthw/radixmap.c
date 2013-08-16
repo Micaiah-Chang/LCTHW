@@ -19,8 +19,9 @@ RadixMap *RadixMap_create(size_t max)
 	 map->temp = calloc(sizeof(RMElement), max +1);
 	 check_mem(map->temp);
 
-	 map->max = max;
-	 map->end = 0;
+	 map->max = max; // Maximum SIZE of radixmap
+	 map->end = 0; 
+	 map->counter = 0; // Maximum KEY inside radixmap
 
 	 return map;
 error:
@@ -52,7 +53,7 @@ static inline void radix_sort(short offset, uint64_t max, uint64_t *source, uint
 		  count[ByteOf(sp, offset)]++;
 	 }
 
-	 // transform count into index by summing elements and storing into same array
+	 // transform count into index for destination by summing elements and storing into same array
 	 for(s = 0, cp = count, end = count + 256; cp < end; cp++) {
 		  c = *cp;
 		  *cp = s;
@@ -82,7 +83,7 @@ void RadixMap_sort(RadixMap *map)
 RMElement *RadixMap_find(RadixMap *map, uint32_t to_find)
 {
 	 int low = 0;
-	 int high = map->end -1;
+	 int high = map->end - 1;
 	 RMElement *data = map->contents;
 
 	 while(low <= high) {
