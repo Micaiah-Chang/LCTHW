@@ -6,6 +6,8 @@
 typedef int (*DArray_compare)(const void *a, const void *b);
 
 int DArray_qsort(DArray *array, DArray_compare cmp);
+int DArray_my_qsort(DArray *array, DArray_compare cmp);
+
 
 int DArray_heapsort(DArray *array, DArray_compare cmp);
 

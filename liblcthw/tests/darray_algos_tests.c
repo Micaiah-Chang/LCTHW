@@ -62,10 +62,16 @@ char *test_mergesort()
 	 return run_sort_test(DArray_mergesort, "mergesort");
 }
 
+char *test_my_qsort()
+{
+	 return run_sort_test(DArray_my_qsort, "my_qsort");
+}
+
 char *all_tests() {
 	 mu_suite_start();
 	 
 	 mu_run_test(test_qsort);
+	 mu_run_test(test_my_qsort);
 //	 mu_run_test(test_heapsort);
 //	 mu_run_test(test_mergesort);
 	 
