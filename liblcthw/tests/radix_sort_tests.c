@@ -64,7 +64,7 @@ static char *test_operations()
 
 	 mu_assert(map != NULL, "Failed to make the map.");
 	 mu_assert(make_random(map), "Didn't make a random fake radix map.");
-	 printf("Moo\n");
+
 	 RadixMap_sort(map);
 	 mu_assert(check_order(map), "Failed to properly sort the RadixMap");
 
