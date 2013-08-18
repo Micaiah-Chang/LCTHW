@@ -11,6 +11,8 @@ int DArray_qsort(DArray *array, DArray_compare cmp)
 
 int DArray_my_qsort(DArray *array, DArray_compare cmp)
 {
+	 // -1 in order to enforce left and right are inclusive in the partition
+	 // or sort function.
 	 my_qsort(array, 0, array->end - 1, cmp);
 	 return 0;
 }
@@ -22,30 +24,27 @@ int partition(DArray *array, int left, int right, int pivot, DArray_compare cmp)
 	 assert(array != NULL && "array cannot be NULL");
 	 
 	 void *pivot_value = array->contents[pivot];
-	 array->contents[pivot] = array->contents[right];
-	 array->contents[right] = pivot_value;
 	 int index = left;
 	 void *temp = NULL;
-	 int i = 0;
 
+	 DArray_swap(array, pivot, right);
+
+	 int i = 0;
 	 
 	 for(i = 0; i < right; i++) {
-		  if(strcmp(array->contents[i], pivot_value) < 0) {
-			   temp = array->contents[i];
-			   array->contents[i] = array->contents[index];
-			   array->contents[index] = temp;
+		  if(cmp(&array->contents[i], &pivot_value) < 0) {
+			   DArray_swap(array, index, i);
 			   index++;
 		  }
 	 }
-	 temp = array->contents[index];
-	 array->contents[index] = array->contents[right];
-	 array->contents[right] = temp;
-
+	 DArray_swap(array, index, right);
+	 
 	 return index;
 }
 
 DArray *my_qsort(DArray *array, int left, int right, DArray_compare cmp)
 {
+	 // NOTE: This algorithm assumes left and right are INCLUSIVE.
 	 assert(array != NULL && "Array cannot be NULL");
 	 assert(left <= right && "Left value cannot be greater than right!");
 	 assert(left >= 0 && right >= && "Left and right values cannot be negative!");

@@ -16,4 +16,11 @@ int DArray_heapsort(DArray *array, DArray_compare cmp);
 
 int DArray_mergesort(DArray *array, DArray_compare cmp);
 
+inline static void DArray_swap(DArray *array, int el1, int el2)
+{
+	 void *temp = array->contents[el2];
+	 array->contents[el2] = array->contents[el1];
+	 array->contents[el1] = temp;
+}
+
 #endif

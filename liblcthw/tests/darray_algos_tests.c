@@ -46,21 +46,6 @@ char *run_sort_test(int (*func)(DArray *, DArray_compare), const char *name)
 	 return NULL;
 }
 
-char *run_my_sort_test(int (*func)(DArray *, DArray_compare), const char *name)
-{
-	 DArray *words = create_words();
-	 mu_assert(!is_sorted(words), "Words should start not stored.");
-
-	 debug("--- Testing %s sorting algorithm", name);
-	 int rc = func(words, (DArray_compare)strcmp);
-	 mu_assert(rc == 0, "sort failed");
-	 mu_assert(is_sorted(words), "didn't sort it");
-
-	 DArray_destroy(words);
-	 return NULL;
-}
-
-
 
 char *test_qsort()
 {
@@ -79,7 +64,7 @@ char *test_mergesort()
 
 char *test_my_qsort()
 {
-	 return run_my_sort_test(DArray_my_qsort, "my_qsort");
+	 return run_sort_test(DArray_my_qsort, "my_qsort");
 }
 
 char *all_tests() {
