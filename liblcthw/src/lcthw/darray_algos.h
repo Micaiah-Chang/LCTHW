@@ -11,8 +11,11 @@ DArray *my_qsort(DArray *array, int left, int right, DArray_compare cmp);
 int DArray_qsort(DArray *array, DArray_compare cmp);
 int DArray_my_qsort(DArray *array, DArray_compare cmp);
 
+void heapify(DArray *array, int length, DArray_compare cmp);
+void sift_down(DArray *array, int start, int end, DArray_compare cmp);
 
 int DArray_heapsort(DArray *array, DArray_compare cmp);
+int DArray_my_heapsort(DArray *array, DArray_compare cmp);
 
 int DArray_mergesort(DArray *array, DArray_compare cmp);
 
