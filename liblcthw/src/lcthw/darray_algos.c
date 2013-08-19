@@ -11,8 +11,8 @@ int DArray_qsort(DArray *array, DArray_compare cmp)
 
 int DArray_my_qsort(DArray *array, DArray_compare cmp)
 {
-	 // -1 in order to enforce left and right are inclusive in the partition
-	 // or sort function.
+	 // It's array->end - 1 in order to enforce left and right
+	 // inclusiveness in the qsort.
 	 my_qsort(array, 0, array->end - 1, cmp);
 	 return 0;
 }
@@ -71,45 +71,52 @@ int DArray_heapsort(DArray *array, DArray_compare cmp)
 
 int DArray_my_heapsort(DArray *array, DArray_compare cmp)
 {
-	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
-	 return 0;
+	 heapify(array, array->end, cmp);
+	 int end = array->end - 1;
 
- /* 	  function heapSort(a, count) is */
- /*     input:  an unordered array a of length count */
- 
- /*     (first place a in max-heap order) */
- /*     heapify(a, count) */
- 
- /*     end := count-1 //in languages with zero-based arrays the children are 2*i+1 and 2*i+2 */
- /*     while end > 0 do */
- /*         (swap the root(maximum value) of the heap with the last element of the heap) */
- /*         swap(a[end], a[0]) */
- /*         (decrease the size of the heap by one so that the previous max value will */
- /*         stay in its proper placement)  */
- /*         end := end - 1 */
- /*         (put the heap back in max-heap order) */
- /*         siftDown(a, 0, end)           */
+	 while(end > 0) {
+	 	  DArray_swap(array, end, 0);
+	 	  end--;
+	 	  sift_down(array, 0, end, cmp);
+	 }
+
+	 return 0;
  
 }
 
 void heapify(DArray *array, int length, DArray_compare cmp)
 {
-
-	  /* function heapify(a, count) is */
- /*     (start is assigned the index in a of the last parent node) */
- /*     start := (count - 2 ) / 2 */
-     
- /*     while start ≥ 0 do */
- /*         (sift down the node at index start to the proper place such that all nodes below */
- /*          the start index are in heap order) */
- /*         siftDown(a, start, count-1) */
- /*         start := start - 1 */
- /*     (after sifting down the root all nodes/elements are in heap order) */
-
+	 int start = (length - 2) / 2;
+	 
+	 while(start >= 0) {
+		  sift_down(array, start, length - 1, cmp);
+		  start--;
+	 }
 }
 
 void sift_down(DArray *array, int start, int end, DArray_compare cmp)
 {
+	 int root = start;
+	 int child = 0;
+	 int swap = 0;
+	 
+	 while(2 * root + 1 <= end) {
+		  child = 2 * root + 1;
+		  swap = root;
+		  if(cmp(&array->contents[swap], &array->contents[child]) < 0) {
+			   swap = child;
+		  }
+		  if(child + 1 <= end &&
+			 cmp(&array->contents[swap], &array->contents[child+1]) < 0) {
+			   swap = child + 1;
+		  }
+		  if(swap != root) {
+			   DArray_swap(array, root, swap);
+			   root = swap;
+					} else {
+			   return;
+		  }
+	 }
  /* function siftDown(a, start, end) is */
  /*     input:  end represents the limit of how far down the heap */
  /*                   to sift. */
