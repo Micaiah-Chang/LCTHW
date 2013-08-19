@@ -245,6 +245,7 @@ error:
 void List_join(List *list1, List *list2)
 {
 	 LIST_FOREACH(list2, first, next, cur) {
+		  cur = cur;
 		  void *value = List_shift(list2);
 		  List_push(list1, value);
 	 }

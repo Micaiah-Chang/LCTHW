@@ -50,6 +50,7 @@ int List_bubble_sort(List *list, List_compare cmp)
 	 }
 	 
 	 sorted(list, cmp);
+	 check(list != NULL, "List cannot be empty at end!");
 	 
 	 return 0;
 error:
@@ -63,7 +64,7 @@ List *merge(List *left, List *right, List_compare cmp)
 	 List *result = List_create();
 	 ListNode *value = NULL;
 	 
-	 while (List_count(left) > 0 || List_count(right) > 0) {
+	 while(List_count(left) > 0 || List_count(right) > 0) {
 		  if(List_count(left) > 0 && List_count(right) > 0) {
 			   if(cmp(List_first(left), List_first(right)) <= 0 ) {
 					value = List_shift(left);

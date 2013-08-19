@@ -25,7 +25,6 @@ int partition(DArray *array, int left, int right, int pivot, DArray_compare cmp)
 	 
 	 void *pivot_value = array->contents[pivot];
 	 int index = left;
-	 void *temp = NULL;
 
 	 DArray_swap(array, pivot, right);
 
