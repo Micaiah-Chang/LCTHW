@@ -144,3 +144,61 @@ int DArray_mergesort(DArray *array, DArray_compare cmp)
 	 return 0;
 //	 return mergesort(array->contents, DArray_count(array), sizeof(void *), cmp);
 }
+
+int DArray_my_mergesort(DArray *array, DArray_compare cmp)
+{
+	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
+	 return 0;
+
+/* /\* array A[] has the items to sort; array B[] is a work array *\/ */
+/* 	 BottomUpSort(int n, array A[n], array B[n]) */
+/* 	 { */
+/* 		  int width; */
+ 
+/* 		  /\* Each 1-element run in A is already "sorted". *\/ */
+ 
+/* 		  /\* Make successively longer sorted runs of length 2, 4, 8, 16... until whole array is sorted. *\/ */
+/* 		  for (width = 1; width < n; width = 2 * width) */
+/* 		  { */
+/* 			   int i; */
+ 
+/* 			   /\* Array A is full of runs of length width. *\/ */
+/* 			   for (i = 0; i < n; i = i + 2 * width) */
+/* 			   { */
+/* 					/\* Merge two runs: A[i:i+width-1] and A[i+width:i+2*width-1] to B[] *\/ */
+/* 					/\* or copy A[i:n-1] to B[] ( if(i+width >= n) ) *\/ */
+/* 					BottomUpMerge(A, i, min(i+width, n), min(i+2*width, n), B); */
+/* 			   } */
+ 
+/* 			   /\* Now work array B is full of runs of length 2*width. *\/ */
+/* 			   /\* Copy array B to array A for next iteration. *\/ */
+/* 			   /\* A more efficient implementation would swap the roles of A and B *\/ */
+/* 			   CopyArray(A, B, n); */
+/* 			   /\* Now array A is full of runs of length 2*width. *\/ */
+/* 		  } */
+/* 	 } */
+ 
+/* 	 BottomUpMerge(array A[], int iLeft, int iRight, int iEnd, array B[]) */
+/* 	 { */
+/* 		  int i0 = iLeft; */
+/* 		  int i1 = iRight; */
+/* 		  int j; */
+ 
+/* 		  /\* While there are elements in the left or right lists *\/ */
+/* 		  for (j = iLeft; j < iEnd; j++) */
+/* 		  { */
+/* 			   /\* If left list head exists and is <= existing right list head *\/ */
+/* 			   if (i0 < iRight && (i1 >= iEnd || A[i0] <= A[i1])) */
+/* 			   { */
+/* 					B[j] = A[i0]; */
+/* 					i0 = i0 + 1; */
+/* 			   } */
+/* 			   else */
+/* 			   { */
+/* 					B[j] = A[i1]; */
+/* 					i1 = i1 + 1; */
+/* 			   } */
+/* 		  } */
+/* 	 } */
+
+}
