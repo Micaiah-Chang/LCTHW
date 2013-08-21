@@ -4,8 +4,6 @@
 int DArray_qsort(DArray *array, DArray_compare cmp)
 {
 	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
-
-
 	 return 0;
 }
 
@@ -116,26 +114,6 @@ void sift_down(DArray *array, int start, int end, DArray_compare cmp)
 			   return;
 		  }
 	 }
- /* function siftDown(a, start, end) is */
- /*     input:  end represents the limit of how far down the heap */
- /*                   to sift. */
- /*     root := start */
-
- /*     while root * 2 + 1 ≤ end do          (While the root has at least one child) */
- /*         child := root * 2 + 1        (root*2 + 1 points to the left child) */
- /*         swap := root        (keeps track of child to swap with) */
- /*         (check if root is smaller than left child) */
- /*         if a[swap] < a[child] */
- /*             swap := child */
- /*         (check if right child exists, and if it's bigger than what we're currently swapping with) */
- /*         if child+1 ≤ end and a[swap] < a[child+1] */
- /*             swap := child + 1 */
- /*         (check if we need to swap at all) */
- /*         if swap != root */
- /*             swap(a[root], a[swap]) */
- /*             root := swap          (repeat to continue sifting down the child now) */
- /*         else */
- /*             return */
 }
 
 int DArray_mergesort(DArray *array, DArray_compare cmp)
@@ -147,8 +125,13 @@ int DArray_mergesort(DArray *array, DArray_compare cmp)
 
 int DArray_my_mergesort(DArray *array, DArray_compare cmp)
 {
-	 my_mergesort(array, cmp);
-
+	 DArray *temp = DArray_create(array->element_size,
+								  array->max);
+	 int i = 0;
+	 temp = my_mergesort(array, cmp);
+	 for(i = 0; i < array->end; i++) {
+		  DArray_set(array, i ,DArray_get(temp, i));
+	 }
 	 return 0;
 }
 
@@ -179,23 +162,34 @@ DArray *my_merge(DArray *left, DArray *right, DArray_compare cmp)
 {
 	 DArray *result = DArray_create(left->element_size,
 									left->max);
-	 while(left->end > 0 || right->end > 0) {
-		  int j = 0;
-		  if(left->end > 0 && right->end > 0) {
-			   if(cmp(&left->contents[j],
-					  &right->contents[j]) <= 0) {
-					DArray_push(result, DArray_get(left, j));
+	 int left_len = 0;
+	 int right_len = 0;
+
+	 while(left->end > left_len || right->end > right_len) {
+		  if(left->end > left_len && right->end > right_len) {
+			   if(cmp(&left->contents[left_len],
+					  &right->contents[right_len]) <= 0) {
+					DArray_push(result, DArray_get(left, left_len));
+					left_len++;
 			   } else {
-					DArray_push(result, DArray_get(right, j));
+					DArray_push(result, DArray_get(right, right_len));
+					right_len++;
 			   }
-		  } else if(left->end > 0) {
-			   DArray_push(result, DArray_get(left, j));
-		  } else if(right->end > 0) {
-			   DArray_push(result, DArray_get(right, j));
+		  } else if(left->end > left_len) {
+			   DArray_push(result, DArray_get(left, left_len));
+			   left_len++;
+		  } else if(right->end > right_len) {
+			   DArray_push(result, DArray_get(right, right_len));
+			   right_len++;
+		  } else {
+			   sentinel("Shouldn't be here");
 		  }
-		  j++;
 	 }
 	 DArray_destroy(left);
 	 DArray_destroy(right);
 	 return result;
+error:
+	 if(left) DArray_destroy(left);
+	 if(right) DArray_destroy(right);
+	 return NULL;
 }
