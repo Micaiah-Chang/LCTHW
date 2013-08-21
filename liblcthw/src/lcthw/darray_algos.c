@@ -197,3 +197,14 @@ error:
 	 if(right) DArray_destroy(right);
 	 return NULL;
 }
+
+int DArray_sort_add(DArray *array, void *el, DArray_compare cmp)
+{
+	 check(array != NULL, "Input cannot be NULL");
+
+	 DArray_push(array, el);
+	 DArray_qsort(array, cmp);
+	 return 0;
+error:
+	 return -1;
+}
