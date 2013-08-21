@@ -1,5 +1,9 @@
 #include <lcthw/darray_algos.h>
+#include <bsd/stdlib.h>
 #include <stdlib.h>
+#include <limits.h>
+#include <time.h>
+
 
 int DArray_qsort(DArray *array, DArray_compare cmp)
 {
@@ -63,7 +67,7 @@ int DArray_heapsort(DArray *array, DArray_compare cmp)
 {
 	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
 	 return 0;
-//	 return heapsort(array->contents, DArray_count(array), sizeof(void *), cmp);
+	 // return heapsort(array->contents, DArray_count(array), sizeof(void *), cmp);
 }
 
 int DArray_my_heapsort(DArray *array, DArray_compare cmp)
@@ -120,7 +124,7 @@ int DArray_mergesort(DArray *array, DArray_compare cmp)
 {
 	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
 	 return 0;
-//	 return mergesort(array->contents, DArray_count(array), sizeof(void *), cmp);
+	 // return mergesort(array->contents, DArray_count(array), sizeof(void *), cmp);
 }
 
 int DArray_my_mergesort(DArray *array, DArray_compare cmp)

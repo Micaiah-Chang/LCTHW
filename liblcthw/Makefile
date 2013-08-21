@@ -1,6 +1,6 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc -rdynamic -DNDEBUG $(OPTFLAGS)
-LIBS=-llcthw $(OPTLIBS)
-LDLIBS=-ldl -lrt
+LIBS=-llcthw -lbsd -lrt -ldl  $(OPTLIBS)
+LDLIBS=-lbsd -lrt -lbsd
 PREFIX?=/usr/local
 
 SOURCES=$(wildcard src/**/*.c src/*.c)
@@ -32,7 +32,7 @@ build:
 # The Unit Tests
 .PHONY: tests
 tests: LDLIBS += $(TARGET)
-tests: $(TESTS) 
+tests: $(TESTS)
 	sh ./tests/runtests.sh
 
 valgrind:
