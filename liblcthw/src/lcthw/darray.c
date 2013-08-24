@@ -17,7 +17,7 @@ DArray *DArray_create(size_t element_size, size_t initial_max)
 	 array->expand_rate = DEFAULT_EXPAND_RATE;
 
 	 check(array->expand_rate > 0, "Expand rate must be greater than zero.");
-	 
+
 	 return array;
 
 error:
@@ -28,7 +28,7 @@ error:
 void DArray_clear(DArray *array)
 {
 	 assert(array != NULL && "Input array should not be NULL.");
-	 
+
 	 int i = 0;
 	 if(array->element_size > 0) {
 		  assert(array->max > 0 && "Array max somehow negative.");
@@ -140,8 +140,8 @@ void *DArray_pop(DArray *array)
 
 	 void *el = DArray_remove(array, array->end - 1);
 	 array->end--;
-	 
-	 check(array->end >= 0, "Array should be non negative.");	 
+
+	 check(array->end >= 0, "Array should be non negative.");
 
 	 if(DArray_end(array) > (int)array->expand_rate && DArray_end(array) % array->expand_rate) {
 		  DArray_contract(array);

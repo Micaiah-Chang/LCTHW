@@ -75,8 +75,7 @@ error:
 	 return NULL;
 }
 
+
 #define DArray_free(E) free((E))
 
 #endif
-
-
