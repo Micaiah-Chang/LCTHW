@@ -77,6 +77,35 @@ char *test_my_mergesort()
 	 return run_sort_test(DArray_my_mergesort, "my_mergesort");
 }
 
+char *test_sort_add()
+{
+	 DArray *words = create_words();
+	 mu_assert(!is_sorted(words), "Words should start not stored.");
+
+	 debug("--- Testing sort_add");
+	 int rc = DArray_sort_add(words, "moo moo farm", (DArray_compare)testcmp);
+	 mu_assert(rc == 0, "Failed to sort_add");
+	 mu_assert(is_sorted(words), "Array should be sorted after");
+	 return NULL;
+}
+
+char *test_find()
+{
+	 DArray *words = create_words();
+	 debug("--- Testing DArray_find");
+	 int rc = DArray_sort_add(words, "moo moo farm", (DArray_compare)testcmp);
+	 mu_assert(rc == 0, "Failed to sort_add");
+	 mu_assert(is_sorted(words), "Array should be sorted after");
+
+	 void *el = DArray_find(words, "moo moo farm", (DArray_compare)testcmp);
+	 mu_assert(el != NULL, "Failed to find element");
+
+	 el = DArray_find(words, "blah blee bloo blee boo blah", (DArray_compare)testcmp);
+	 mu_assert(el == NULL, "Should not find elements that don't exist.");
+
+	 return NULL;
+}
+
 char *all_tests() {
 	 mu_suite_start();
 
@@ -88,6 +117,9 @@ char *all_tests() {
 	 mu_run_test(test_my_qsort);
 	 mu_run_test(test_my_heapsort);
 	 mu_run_test(test_my_mergesort);
+
+	 mu_run_test(test_sort_add);
+	 mu_run_test(test_find);
 
 	 return NULL;
 }
