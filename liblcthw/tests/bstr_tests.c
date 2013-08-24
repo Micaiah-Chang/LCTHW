@@ -151,6 +151,39 @@ char *test_bsplit()
 	 return NULL;
 }
 
+char *test_bformat()
+{
+	 char *temp = "Pleb.";
+	 b = bformat("Hello %s", temp);
+	 mu_assert(b != NULL, "Did not format correctly");
+
+	 bstring d = bfromcstr("Hello Pleb.");
+	 int rc = bstrcmp(b, d);
+	 mu_assert(rc == 0, "Unexpected mismatch from bformat.");
+	 return NULL;
+}
+
+char *test_blength()
+{
+	 int rc = blength(b);
+	 mu_assert(rc == 11, "Wrong length for string \"Hello Pleb.\"");
+	 a = bfromcstr("");
+	 rc = blength(a);
+	 mu_assert(0 == rc, "Wrong length for empty string.");
+	 return NULL;
+}
+
+char *test_bchar()
+{
+	 char temp;
+	 temp = bchar(b, 3);
+	 mu_assert('l' == temp, "Returned with wrong character");
+
+	 temp = bchar(b, 20);
+	 mu_assert(0 == temp, "Should fail on entry past end of string");
+	 return NULL;
+}
+
 char *all_tests() {
 	 mu_suite_start();
 
@@ -169,6 +202,11 @@ char *all_tests() {
 	 mu_run_test(test_binstr);
 	 mu_run_test(test_bfindreplace);
 	 mu_run_test(test_bsplit);
+
+	 mu_run_test(test_bformat);
+	 mu_run_test(test_blength);
+	 mu_run_test(test_bchar);
+
 	 return NULL;
 }
 
