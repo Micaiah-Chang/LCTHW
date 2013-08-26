@@ -40,7 +40,8 @@ char *test_bstrcpy()
 
 	 int rc = strcmp((const char *)a->data, (const char *)b->data);
 	 mu_assert(rc == 0, "bstring failed to copy successfully.");
-
+	 bdestroy(a);
+	 bdestroy(b);
 	 return NULL;
 }
 
@@ -57,13 +58,12 @@ char *test_bassign()
 
 	 rc = strcmp((char *)b->data, (char *)a->data);
 	 mu_assert(rc == 0, "Not identical");
+
 	 return NULL;
 }
 
 char *test_bassigncstr()
 {
-	 b = bfromcstr("World");
-
 	 int rc = bassigncstr(b, "Hello");
 	 mu_assert(rc == BSTR_OK, "bassigncstr failed");
 
@@ -80,6 +80,9 @@ char *test_bassignblk()
 
 	 rc = strcmp("moo", (char *)b->data);
 	 mu_assert(0 == rc, "String not expected result.");
+
+	 bdestroy(b);
+
 	 return NULL;
 }
 
@@ -89,10 +92,13 @@ char *test_bconcat()
 	 mu_assert(b != NULL, "Failed to create a string");
 
 	 int rc = bconcat(b, a);
-	 mu_assert(rc == 0, "Failed to succesffually cat");
+	 mu_assert(rc == 0, "Failed to cat");
 
 	 rc = strcmp((char *)b->data, "Hello World");
 	 mu_assert(rc == 0, "Concat not expected result");
+
+	 bdestroy(a);
+
 	 return NULL;
 }
 
@@ -108,12 +114,15 @@ char *test_bstricmp()
 char *test_biseq()
 {
 	 int rc = biseq(a, b);
-	 mu_assert(rc == 1, "biseq  be equal");
+	 mu_assert(rc == 1, "biseq isn't equal equal");
+	 bdestroy(b);
+
 	 return NULL;
 }
 
 char *test_binstr()
 {
+
 	 b = bfromcstr("orld");
 	 int rc = binstr(a, 0, b);
 	 mu_assert(rc != BSTR_ERR, "Did not find string in b");
@@ -131,6 +140,10 @@ char *test_bfindreplace()
 	 rc = biseq(a, c);
 	 mu_assert(rc == 0, "a should not be equal to c");
 
+	 bdestroy(b);
+	 bdestroy(c);
+	 bdestroy(d);
+
 	 return NULL;
 }
 
@@ -144,10 +157,14 @@ char *test_bsplit()
 	 int rc = bstrcmp(list->entry[0], b);
 	 mu_assert(rc == 0, "Unexpected mismatch for first entry");
 
+	 bdestroy(b);
+
 	 b = bfromcstr("Weird");
 	 rc = bstrcmp(list->entry[1], b);
 	 mu_assert(rc == 0, "Unexpected mismatch for first entry");
 
+	 bdestroy(b);
+	 bstrListDestroy(list);
 	 return NULL;
 }
 
@@ -160,6 +177,8 @@ char *test_bformat()
 	 bstring d = bfromcstr("Hello Pleb.");
 	 int rc = bstrcmp(b, d);
 	 mu_assert(rc == 0, "Unexpected mismatch from bformat.");
+
+	 bdestroy(d);
 	 return NULL;
 }
 
@@ -167,9 +186,14 @@ char *test_blength()
 {
 	 int rc = blength(b);
 	 mu_assert(rc == 11, "Wrong length for string \"Hello Pleb.\"");
+
+	 bdestroy(a);
 	 a = bfromcstr("");
 	 rc = blength(a);
 	 mu_assert(0 == rc, "Wrong length for empty string.");
+
+	 bdestroy(a);
+
 	 return NULL;
 }
 
@@ -181,6 +205,8 @@ char *test_bchar()
 
 	 temp = bchar(b, 20);
 	 mu_assert(0 == temp, "Should fail on entry past end of string");
+
+	 bdestroy(b);
 	 return NULL;
 }
 
