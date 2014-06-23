@@ -63,7 +63,7 @@ DArray *my_qsort(DArray *array, int left, int right, DArray_compare cmp)
 
 int DArray_heapsort(DArray *array, DArray_compare cmp)
 {
-	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
+	 heapsort(array->contents, DArray_count(array), sizeof(void *), cmp);
 	 return 0;
 	 // return heapsort(array->contents, DArray_count(array), sizeof(void *), cmp);
 }
@@ -120,7 +120,7 @@ void sift_down(DArray *array, int start, int end, DArray_compare cmp)
 
 int DArray_mergesort(DArray *array, DArray_compare cmp)
 {
-	 qsort(array->contents, DArray_count(array), sizeof(void *), cmp);
+	 mergesort(array->contents, DArray_count(array), sizeof(void *), cmp);
 	 return 0;
 //	 return mergesort(array->contents, DArray_count(array), sizeof(void *), cmp);
 }
