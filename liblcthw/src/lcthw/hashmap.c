@@ -3,6 +3,8 @@
 #include <lcthw/hashmap.h>
 #include <lcthw/dbg.h>
 #include <lcthw/bstrlib.h>
+#include <lcthw/darray_algos.h>
+
 
 static int default_compare(void *a, void *b)
 {
@@ -130,7 +132,9 @@ int Hashmap_set(Hashmap *map, void *key, void *data)
 	 HashmapNode *node = Hashmap_node_create(hash, key, data);
 	 check_mem(node);
 
+	 //DArray_sort_add(bucket, node, (DArray_compare)map->compare);
 	 DArray_push(bucket, node);
+
 
 	 return 0;
 error:
@@ -142,12 +146,16 @@ static inline int Hashmap_get_node(Hashmap *map, uint32_t hash, DArray *bucket, 
 	 int i = 0;
 
 	 for(i = 0; i < DArray_end(bucket); i++) {
-		  debug("TRY: %d", i);
-		  HashmapNode *node= DArray_get(bucket, i);
-		  if(node->hash == hash && map->compare(node->key, key) == 0) {
-			   return i;
-		  }
+	 	  debug("TRY: %d", i);
+	 	  HashmapNode *node= DArray_get(bucket, i);
+	 	  if(node->hash == hash && map->compare(node->key, key) == 0) {
+	 		   return i;
+	 	  }
 	 }
+	 /* HashmapNode *el = (HashmapNode *)DArray_find(bucket, key, (DArray_compare)map->compare); */
+	 /* if(el && el->hash == hash) { */
+	 /* 	  return (int)((void *)&el - (void *)bucket->contents[0]); */
+	 /* } */
 
 	 return -1;
 }
