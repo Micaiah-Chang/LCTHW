@@ -122,6 +122,27 @@ error:
 	 return NULL;
 }
 
+int Hashmap_uniq_set(Hashmap *map, void *key, void *data)
+{
+	 uint32_t hash = 0;
+	 DArray *bucket = Hashmap_find_bucket(map, key, 1, &hash);
+	 check(bucket, "Error: can't create bucket.");
+
+	 if (Hashmap_get(map, key) == NULL) {
+		  HashmapNode *node = Hashmap_node_create(hash, key, data);
+		  //DArray_sort_add(bucket, node, (DArray_compare)map->compare);
+		  check_mem(node);
+		  DArray_push(bucket, node);
+	 } else {
+		  // do nothing if Hashmap is already in
+	 }
+
+
+	 return 0;
+error:
+	 return -1;
+}
+
 
 int Hashmap_set(Hashmap *map, void *key, void *data)
 {
@@ -129,12 +150,12 @@ int Hashmap_set(Hashmap *map, void *key, void *data)
 	 DArray *bucket = Hashmap_find_bucket(map, key, 1, &hash);
 	 check(bucket, "Error: can't create bucket.");
 
+	 
 	 HashmapNode *node = Hashmap_node_create(hash, key, data);
+		  //DArray_sort_add(bucket, node, (DArray_compare)map->compare);
 	 check_mem(node);
-
-	 //DArray_sort_add(bucket, node, (DArray_compare)map->compare);
 	 DArray_push(bucket, node);
-
+	 
 
 	 return 0;
 error:

@@ -12,6 +12,9 @@ struct tagbstring expect1 = bsStatic("THE VALUE 1");
 struct tagbstring expect2 = bsStatic("THE VALUE 2");
 struct tagbstring expect3 = bsStatic("THE VALUE 3");
 
+struct tagbstring test4 = bsStatic("test data 4");
+struct tagbstring expect4 = bsStatic("THE VALUE 4");
+
 static int traverse_good_cb(HashmapNode *node)
 {
 	 debug("Key: %s", bdata((bstring)node->key));
@@ -65,7 +68,7 @@ char *test_get_set()
 	 mu_assert(rc == 0, "Failed to set test3");
 	 result = Hashmap_get(map, &test3);
 	 mu_assert(result == &expect3, "Wrong value for test3.");
-
+	 
 	 return NULL;
 }
 
@@ -74,12 +77,32 @@ char *test_traverse()
 	 int rc = Hashmap_traverse(map, traverse_good_cb);
 	 mu_assert(rc == 0, "Failed to traverse.");
 	 mu_assert(traverse_called == 3, "Wrong count traverse.");
-
+	 
 	 traverse_called = 0;
 	 rc = Hashmap_traverse(map, traverse_fail_cb);
 	 mu_assert(rc == 1, "Failed to traverse");
 	 mu_assert(traverse_called == 2, "Wrong count traverse for fail.");
 
+	 return NULL;
+}
+
+char *test_uniq_set()
+{
+	 int rc = Hashmap_uniq_set(map, &test1, &expect1);
+	 mu_assert(rc == 0, "Failed to set &test1");
+	 bstring result = Hashmap_get(map, &test1);
+	 mu_assert(result == &expect1, "Wrong value for test1.");
+
+	 rc = Hashmap_uniq_set(map, &test4, &expect4);
+	 mu_assert(rc == 0, "Failed to set test4");
+	 result = Hashmap_get(map, &test4);
+	 mu_assert(result == &expect4, "Wrong value for test4.");
+	 
+	 traverse_called = 0;
+	 rc = Hashmap_traverse(map, traverse_good_cb);
+	 mu_assert(rc == 0, "Failed to traverse.");
+	 mu_assert(traverse_called == 4, "Did not ignore redundant value.");
+	 
 	 return NULL;
 }
 
@@ -112,6 +135,7 @@ char *all_tests() {
 	 mu_run_test(test_create);
 	 mu_run_test(test_get_set);
 	 mu_run_test(test_traverse);
+	 mu_run_test(test_uniq_set);
 	 mu_run_test(test_delete);
 	 mu_run_test(test_destroy);
 
