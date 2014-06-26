@@ -4,36 +4,11 @@
 #include <lcthw/dbg.h>
 #include <lcthw/bstrlib.h>
 #include <lcthw/darray_algos.h>
-
+#include <lcthw/hashmap_algos.h>
 
 static int default_compare(void *a, void *b)
 {
 	 return bstrcmp((bstring)a, (bstring)b);
-}
-
-/*
- * Simple Bob Jenkin's hash algorithm taken from the
- * wikipedia description.
- */
-static uint32_t default_hash(void *a)
-{
-	 size_t len = blength((bstring)a);
-	 char *key = bdata((bstring)a);
-	 uint32_t hash = 0;
-	 uint32_t i = 0;
-
-	 for(hash = i = 0; i < len; ++i) {
-		  hash += key[i];
-		  hash += (hash << 10);
-		  hash ^= (hash >> 6);
-	 }
-
-
-	 hash += (hash << 3);
-	 hash ^= (hash >> 11);
-	 hash += (hash << 15);
-
-	 return hash;
 }
 
 
@@ -43,7 +18,7 @@ Hashmap *Hashmap_create(Hashmap_compare compare, Hashmap_hash hash)
 	 check_mem(map);
 
 	 map->compare = compare == NULL ? default_compare : compare;
-	 map->hash = hash == NULL ? default_hash : hash;
+	 map->hash = hash == NULL ? Hashmap_jenkins_hash : hash;
 	 map->buckets = DArray_create(sizeof(DArray *), DEFAULT_NUMBER_OF_BUCKETS);
 	 map->buckets->end = map->buckets->max; // fake out expanding it
 	 check_mem(map->buckets);
@@ -237,7 +212,7 @@ void *Hashmap_delete(Hashmap *map, void *key)
 	 HashmapNode *ending = DArray_pop(bucket);
 
 	 if(ending != node) {
-		  // alright looks liek it's not the last one, swap it
+		  // alright looks like it's not the last one, swap it
 		  DArray_set(bucket, i, ending);
 	 }
 

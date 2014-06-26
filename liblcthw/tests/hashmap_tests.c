@@ -2,6 +2,8 @@
 #include <lcthw/hashmap.h>
 #include <assert.h>
 #include <lcthw/bstrlib.h>
+#include <time.h>
+
 
 Hashmap *map = NULL;
 static int traverse_called = 0;
@@ -54,6 +56,11 @@ char *test_destroy()
 
 char *test_get_set()
 {
+	 struct timespec before;
+	 struct timespec after;
+
+	 clock_gettime(CLOCK_REALTIME, &before);
+	 
 	 int rc = Hashmap_set(map, &test1, &expect1);
 	 mu_assert(rc == 0, "Failed to set &test1");
 	 bstring result = Hashmap_get(map, &test1);
@@ -68,6 +75,11 @@ char *test_get_set()
 	 mu_assert(rc == 0, "Failed to set test3");
 	 result = Hashmap_get(map, &test3);
 	 mu_assert(result == &expect3, "Wrong value for test3.");
+
+
+	 clock_gettime(CLOCK_REALTIME, &after);
+	 
+	 log_info("Hashing three entries took %ld nanoseconds.\n", (after.tv_nsec - before.tv_nsec));
 	 
 	 return NULL;
 }
@@ -128,6 +140,7 @@ char *test_delete()
 
 	 return NULL;
 }
+
 
 char *all_tests() {
 	 mu_suite_start();
