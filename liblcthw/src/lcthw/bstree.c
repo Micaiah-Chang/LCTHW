@@ -2,6 +2,7 @@
 #include <lcthw/bstree.h>
 #include <stdlib.h>
 #include <lcthw/bstrlib.h>
+#include <assert.h>
 
 static int default_compare(void *a, void *b)
 {
@@ -27,6 +28,8 @@ error:
 
 static int BSTree_destroy_cb(BSTreeNode *node)
 {
+	 assert(node != NULL && "Cannot destroy NULL node.");
+	 
 	 free(node);
 	 return 0;
 }
@@ -42,6 +45,9 @@ void BSTree_destroy(BSTree *map)
 
 static inline BSTreeNode *BSTreeNode_create(BSTreeNode *parent, void *key, void *data)
 {
+	 assert(key != NULL && "Key cannot be NULL");
+	 assert(data != NULL && "Data cannot be NULL.");
+	 
 	 BSTreeNode *node = calloc(1, sizeof(BSTreeNode));
 	 check_mem(node);
 
@@ -57,6 +63,11 @@ error:
 
 static inline void BSTree_setnode(BSTree *map, BSTreeNode *node, void *key, void *data)
 {
+	 assert(map != NULL && "Tree cannot be NULL when setting nodes.");
+	 assert(node != NULL && "Node to set cannot be NULL.");
+	 assert(key != NULL && "Key to set cannot be NULL.");
+	 assert(data != NULL && "Data to set cannot be NULL.");
+	 
 	 int cmp = map->compare(node->key, key);
 
 	 if(cmp <= 0) {
@@ -77,6 +88,10 @@ static inline void BSTree_setnode(BSTree *map, BSTreeNode *node, void *key, void
 
 int BSTree_set(BSTree *map, void *key, void *data)
 {
+	 assert(map != NULL && "Cannot set NULL tree.");
+	 assert(key != NULL && "Key to set cannot be NULL.");
+	 assert(data != NULL && "Data to set cannot be NULL.");
+	 
 	 if(map->root == NULL) {
 		  // first so just make it and get out
 		  map->root = BSTreeNode_create(NULL, key, data);
@@ -92,6 +107,10 @@ error:
 
 static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *key)
 {
+	 assert(map != NULL && "Tree cannot be NULL when getting nodes.");
+	 assert(node != NULL && "Node to get cannot be NULL.");
+	 assert(key != NULL && "Key to look for cannot be NULL.");
+	 
 	 int cmp = map->compare(node->key, key);
 
 	 if(cmp == 0) {
@@ -113,6 +132,9 @@ static inline BSTreeNode *BSTree_getnode(BSTree *map, BSTreeNode *node, void *ke
 
 void *BSTree_get(BSTree *map, void *key)
 {
+	 assert(map != NULL && "Tree to obtain cannot be NULL.");
+	 assert(key != NULL && "Key to obtain cannot be NULL.");
+	 
 	 if(map->root == NULL) {
 		  return NULL;
 	 } else {
@@ -123,6 +145,7 @@ void *BSTree_get(BSTree *map, void *key)
 
 static inline BSTree_traverse_nodes(BSTreeNode *node, BSTree_traverse_cb traverse_cb)
 {
+	 assert(node != NULL && "Node during traversal cannot be NULL.");
 	 int rc = 0;
 
 	 if(node->left) {
@@ -140,6 +163,8 @@ static inline BSTree_traverse_nodes(BSTreeNode *node, BSTree_traverse_cb travers
 
 int BSTree_traverse(BSTree *map, BSTree_traverse_cb traverse_cb)
 {
+	 assert(map != NULL && "Tree to traverse cannot be NULL");
+	 
 	 if(map->root) {
 		  return BSTree_traverse_nodes(map->root, traverse_cb);
 	 }
@@ -149,6 +174,8 @@ int BSTree_traverse(BSTree *map, BSTree_traverse_cb traverse_cb)
 
 static inline BSTreeNode *BSTree_find_min(BSTreeNode *node)
 {
+	 assert(node != NULL && "Cannot find minimum of NULL node!");
+	 
 	 while(node->left) {
 		  node = node->left;
 	 }
@@ -158,6 +185,9 @@ static inline BSTreeNode *BSTree_find_min(BSTreeNode *node)
 
 static inline void BSTree_replace_node_in_parent(BSTree *map, BSTreeNode *node, BSTreeNode *new_value)
 {
+	 assert(node != NULL && "Node cannot be NULL.");
+	 assert(map != NULL && "Tree cannot be NULL");
+	 
 	 if(node->parent) {
 		  if(node == node->parent->left) {
 			   node->parent->left = new_value;
@@ -176,6 +206,9 @@ static inline void BSTree_replace_node_in_parent(BSTree *map, BSTreeNode *node, 
 
 static inline void BSTree_swap(BSTreeNode *a, BSTreeNode *b)
 {
+	 assert(a != NULL && "First node should not be NULL for swap");
+	 assert(b != NULL && "Second node shouldn ot be NULL for swap");
+	 
 	 void *temp = NULL;
 	 temp = b->key; b->key = a->key; a->key = temp;
 	 temp = b->data; b->data = a->data; a->data = temp;
@@ -183,6 +216,9 @@ static inline void BSTree_swap(BSTreeNode *a, BSTreeNode *b)
 
 static inline BSTreeNode *BSTree_node_delete(BSTree *map, BSTreeNode *node, void *key)
 {
+	 assert(map != NULL && "Tree should never be NULL when deleting node");
+	 assert(node != NULL && "Current node should never be NULL");
+	 
 	 int cmp= map->compare(node->key, key);
 
 	 if(cmp < 0) {
@@ -225,6 +261,9 @@ static inline BSTreeNode *BSTree_node_delete(BSTree *map, BSTreeNode *node, void
 
 void *BSTree_delete(BSTree *map, void *key)
 {
+	 assert(map != NULL && "Cannot delete already deleted map.");
+	 assert(key != NULL && "Key needs to point to non-NULL value.");
+	 
 	 void *data = NULL;
 	 
 	 if(map->root) {
