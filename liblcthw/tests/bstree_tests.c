@@ -159,6 +159,8 @@ char *all_tests()
 	 mu_run_test(test_delete);
 	 mu_run_test(test_destroy);
 	 mu_run_test(test_fuzzing);
+
+	 return NULL;
 }
 
 RUN_TESTS(all_tests);
