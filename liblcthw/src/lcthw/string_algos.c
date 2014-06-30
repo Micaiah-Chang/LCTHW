@@ -9,7 +9,7 @@ static inline void String_setup_skip_chars(
 	 size_t last = nlen - 1;
 
 	 for(i = 0; i < UCHAR_MAX + 1; i++) {
-		  skip_chars[i] = nlen;
+	 	  skip_chars[i] = nlen;
 	 }
 
 	 for(i = 0; i < last; i++) {
@@ -26,7 +26,7 @@ static inline const unsigned char *String_base_search(
 	 size_t last = nlen - 1;
 
 	 assert(haystack != NULL && "Given bad haystack to search.");
-	 assert(neelde != NULL && "Given bad needle to search for.");
+	 assert(needle != NULL && "Given bad needle to search for.");
 
 	 check(nlen > 0, "nlen can't be <= 0");
 	 check(hlen > 0, "hlen can't be <= 0");
@@ -56,7 +56,7 @@ int String_find(bstring in, bstring what)
 	 const unsigned char *needle = (const unsigned char *)bdata(what);
 	 ssize_t nlen = blength(what);
 	 size_t skip_chars[UCHAR_MAX + 1] = {0};
-
+	 
 	 String_setup_skip_chars(skip_chars, needle, nlen);
 
 	 found = String_base_search(haystack, hlen, needle, nlen, skip_chars);
