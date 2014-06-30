@@ -38,6 +38,19 @@ char *test_binstr_performance()
 	 int found_at = 0;
 	 unsigned long find_count = 0;
 	 time_t elapsed = 0;
+	 time_t warmup_start = time(NULL);
+	 
+	 do {
+		  for(i = 0; i < 1000; i++) {
+			   found_at = binstr(&IN_STR, 0, &ALPHA);
+			   mu_assert(found_at != BSTR_ERR, "Failed to find!");
+		  }
+
+		  elapsed = time(NULL) - warmup_start;
+	 } while (elapsed <= TEST_TIME);
+
+	 
+	 elapsed = 0;
 	 time_t start = time(NULL);
 
 	 do {
@@ -61,9 +74,20 @@ char *test_find_performance()
 	 int found_at = 0;
 	 unsigned long find_count = 0;
 	 time_t elapsed = 0;
-	 time_t start = time(NULL);
+	 time_t warmup_start = time(NULL);
 
 	 do {
+		  for(i = 0; i < 1000; i++) {
+			   found_at = String_find(&IN_STR, &ALPHA);
+		  }
+
+		  elapsed = time(NULL) - warmup_start;
+	 } while (elapsed <= TEST_TIME);
+	 
+	 elapsed = 0;
+	 time_t start = time(NULL);
+	 
+	 	 do {
 		  for(i = 0; i < 1000; i++) {
 			   found_at = String_find(&IN_STR, &ALPHA);
 			   find_count++;
@@ -71,7 +95,7 @@ char *test_find_performance()
 
 		  elapsed = time(NULL) - start;
 	 } while (elapsed <= TEST_TIME);
-
+	 
 	 debug("FIND COUNT: %lu, END TIME: %d, OPS: %f",
 		   find_count, (int)elapsed, (double)find_count / elapsed);
 
@@ -86,8 +110,22 @@ char *test_scan_performance()
 	 time_t elapsed = 0;
 	 StringScanner *scan = StringScanner_create(&IN_STR);
 
-	 time_t start = time(NULL);
+	 time_t warmup_start = time(NULL);
 
+	 do {
+		  for(i = 0; i < 1000; i++) {
+			   found_at = 0;
+			   do {
+					found_at = StringScanner_scan(scan, &ALPHA);
+			   } while (found_at != -1);
+		  }
+
+		  elapsed = time(NULL) - warmup_start;
+	 } while (elapsed <= TEST_TIME);
+
+	 elapsed = 0;
+	 time_t start = time(NULL);
+	 
 	 do {
 		  for(i = 0; i < 1000; i++) {
 			   found_at = 0;
@@ -99,7 +137,7 @@ char *test_scan_performance()
 
 		  elapsed = time(NULL) - start;
 	 } while (elapsed <= TEST_TIME);
-
+	 
 	 debug("SCAN COUNT: %lu, END TIME: %d, OPS: %f",
 		   find_count, (int)elapsed, (double)find_count / elapsed);
 
