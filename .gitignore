@@ -16,3 +16,5 @@ core.*
 *.so
 *_tests
 /liblcthw/hash.txt
+/liblcthw/.Rhistory
+/liblcthw/.RData
