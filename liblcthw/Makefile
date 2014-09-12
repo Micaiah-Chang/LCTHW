@@ -1,5 +1,5 @@
 CFLAGS=-g -O2 -Wall -Wextra -Isrc $(shell pkg-config --cflags libbsd) -rdynamic -DNDEBUG $(OPTFLAGS)
-COMMON_LIBS=$(shell pkg-config --libs libbsd) -ldl -lrt $(OPTLIBS)
+COMMON_LIBS=$(shell pkg-config --libs libbsd) -ldl -lrt -lm $(OPTLIBS)
 LDLIBS=$(COMMON-LIBS)
 PREFIX?=/usr/local
 
