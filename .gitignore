@@ -18,3 +18,4 @@ core.*
 /liblcthw/hash.txt
 /liblcthw/.Rhistory
 /liblcthw/.RData
+*.pyc
