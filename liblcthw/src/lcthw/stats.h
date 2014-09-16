@@ -1,6 +1,8 @@
 #ifndef lcthw_stats_h
 #define lcthw_stats_h
 
+#include <math.h>
+
 typedef struct Stats {
 	 double sum;
 	 double sumsq;
@@ -13,9 +15,9 @@ Stats *Stats_recreate(double sum, double sumsq, unsigned long, double min, doubl
 
 Stats *Stats_create();
 
-double Stats_mean(Stats *st);
+#define Stats_mean(S) (S)->sum / (S)->n
 
-double Stats_stddev(Stats *st);
+#define Stats_stddev(S) sqrt( ((S)->sumsq - ((S)->sum * (S)->sum / (S)->n)) / ((S)->n -1))
 
 void Stats_sample(Stats *st, double s);
 

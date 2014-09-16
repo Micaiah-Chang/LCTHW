@@ -25,17 +25,6 @@ Stats *Stats_create()
 	 return Stats_recreate(0.0, 0.0, 0L, 0.0, 0.0);
 }
 
-
-double Stats_mean(Stats *st)
-{
-	 return st->sum / st->n;
-}
-
-double Stats_stddev(Stats *st)
-{
-	 return sqrt( (st->sumsq - ( st->sum * st->sum / st->n)) / (st->n - 1));
-}
-
 void Stats_sample(Stats *st, double s)
 {
 	 st->sum += s;
