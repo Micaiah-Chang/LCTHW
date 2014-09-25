@@ -1,4 +1,12 @@
-CFLAGS=-Wall -g  -DNDEBUG
+CFLAGS=-g -O2 -Wall -Wextra -Isrc $(shell pkg-config --cflags libbsd) -rdynamic -DNDEBUG $(OPTFLAGS)
+COMMON_LIBS=$(shell pkg-config --libs libbsd) -ldl -lrt -lm $(OPTLIBS) -llcthw
+LDLIBS=$(COMMON_LIBS)
+PREFIX?=/usr/local
+
+TARGET=liblcthw.a
+
+SOURCES=$(wildcard liblcthw/src/**/*.c src/*.c)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
 
 clean:
 	rm -f ./bin/*
@@ -89,4 +97,3 @@ all:
 	cc ex17.c -o ./bin/ex17
 	cc ex18.c -o ./bin/ex18
 	cc ex20.c -o ./bin/ex20
-
