@@ -11,7 +11,7 @@ typedef struct Stats {
 	 double max;
 } Stats;
 
-Stats *Stats_recreate(double sum, double sumsq, unsigned long, double min, double max);
+Stats *Stats_recreate(double sum, double sumsq, unsigned long n, double min, double max);
 
 Stats *Stats_create();
 
@@ -22,5 +22,7 @@ Stats *Stats_create();
 void Stats_sample(Stats *st, double s);
 
 void Stats_dump(Stats *st);
+
+void Stats_destroy(Stats *st);
 
 #endif

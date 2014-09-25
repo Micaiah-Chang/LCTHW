@@ -47,3 +47,11 @@ void Stats_dump(Stats *st)
 			 st->sum, st->sumsq, st->n, st->min, st->max,
 			 Stats_mean(st), Stats_stddev(st));
 }
+
+
+void Stats_destroy(Stats *st)
+{
+	 if(st) {
+		  free(st);
+	 }
+}
